@@ -162,67 +162,50 @@
           <p class="section-lead">Tous nos produits sont préparés sur place, sans conservateurs. Production limitée chaque jour — commandez avant 20h pour le lendemain.</p>
         </div>
 
-        <div class="menu-grid">
-          <!-- Viennoiserie -->
-          <article class="menu-card fade-up" aria-label="Viennoiseries et croissants">
-            <div class="menu-card-img">
-              <img src="images/menu-viennoiseries.webp" alt="Plateau de croissants fourrés à la crème et fraise, viennoiseries Lartica" width="600" height="450" loading="lazy" decoding="async" />
-              <span class="menu-card-badge">Signature</span>
-            </div>
-            <div class="menu-card-body">
-              <h3>Croissants &amp; viennoiseries</h3>
-              <p>Beurre AOP Charentes-Poitou, fermentation lente 48h, cuisson matinale. Le feuilletage pur beurre selon les règles de l'art.</p>
-              <ul class="menu-items" aria-label="Exemples de produits">
-                <li>Croissant nature</li><li>Croissant pistache</li><li>Pain au chocolat</li><li>Pain Suisse</li><li>Cinnamon Roll</li>
-              </ul>
-              <div class="price-tag">
-                <span>À partir de <strong>12 DH</strong> · Plateau 6 pcs à 70 DH</span>
-                <button class="quick-order-btn" data-open-order data-product="Croissants & viennoiseries" aria-label="Commander des croissants et viennoiseries">Commander</button>
-              </div>
-            </div>
-          </article>
+        <div class="menu-categories-grid" aria-label="Commander par catégorie">
 
-          <!-- Marocains -->
-          <article class="menu-card fade-up" aria-label="Pâtisseries marocaines traditionnelles">
-            <div class="menu-card-img">
-              <img src="images/menu-marocains.webp" alt="Plateau de pâtisseries marocaines : kaab ghzal, fekkas, ghraybe aux noix" width="600" height="450" loading="lazy" decoding="async" />
-              <span class="menu-card-badge">Tradition</span>
-            </div>
-            <div class="menu-card-body">
-              <h3>Classiques marocains</h3>
-              <p>Recettes du patrimoine revisitées avec précision : amandes de Taza, orange blossom des Atlas, miel local.</p>
-              <ul class="menu-items" aria-label="Exemples de produits">
-                <li>Kaab Ghzal</li><li>Fekkas amande</li><li>Ghraybe</li><li>Ghriba noix</li><li>Corne de gazelle</li>
-              </ul>
-              <div class="price-tag">
-                <span>À partir de <strong>8 DH</strong> · Boîte 500g à 120 DH</span>
-                <button class="quick-order-btn" data-open-order data-product="Classiques marocains" aria-label="Commander des classiques marocains">Commander</button>
-              </div>
-            </div>
-          </article>
+          <!-- Viennoiseries Traditionnelles -->
+          <button class="cat-tile" type="button" data-open-order data-product="croissant pain" aria-label="Commander des viennoiseries traditionnelles">
+            <div class="cat-emoji" aria-hidden="true">🥐</div>
+            <span class="cat-tile-name">Viennoiseries<br>Traditionnelles</span>
+            <span class="cat-tile-price">À partir de 6 DH</span>
+          </button>
 
-          <!-- Gâteaux -->
-          <article class="menu-card fade-up" aria-label="Gâteaux et commandes sur mesure">
-            <div class="menu-card-img">
-              <img src="images/menu-gateaux.webp" alt="Wedding cake Lartica : pièce montée fondant blanc, roses rouges et décors dorés" width="600" height="450" loading="lazy" decoding="async" />
-              <span class="menu-card-badge">Sur mesure</span>
-            </div>
-            <div class="menu-card-body">
-              <h3>Gâteaux &amp; commandes</h3>
-              <p>Anniversaires, mariages, EVJF, corporate. Devis personnalisé sous 2h. Préavis 48h minimum recommandé.</p>
-              <ul class="menu-items" aria-label="Exemples de produits">
-                <li>Wedding cake</li><li>Gâteau artistique</li><li>Pièce montée</li><li>Plateau événement</li><li>Cake design</li>
-              </ul>
-              <div class="price-tag">
-                <span>Sur devis · À partir de <strong>400 DH</strong></span>
-                <button class="quick-order-btn" data-open-order data-product="Gâteaux sur mesure" aria-label="Commander des gâteaux sur mesure">Commander</button>
-              </div>
-            </div>
-          </article>
-        </div>
+          <!-- Viennoiseries Modernes -->
+          <button class="cat-tile" type="button" data-open-order data-product="crokies dubai moderne" aria-label="Commander des viennoiseries modernes">
+            <div class="cat-emoji" aria-hidden="true">✨</div>
+            <span class="cat-tile-name">Viennoiseries<br>Modernes</span>
+            <span class="cat-tile-price">À partir de 10 DH</span>
+          </button>
 
-        <div class="menu-cta">
-          <button class="btn-primary" data-open-order>📋 Commander avec formulaire</button>
+          <!-- Classiques Marocains -->
+          <button class="cat-tile" type="button" data-open-order data-product="kaab ghzal marocain fekkas" aria-label="Commander des classiques marocains">
+            <div class="cat-emoji" aria-hidden="true">🍯</div>
+            <span class="cat-tile-name">Classiques<br>Marocains</span>
+            <span class="cat-tile-price">À partir de 250g</span>
+          </button>
+
+          <!-- Formules & Box -->
+          <button class="cat-tile" type="button" data-open-order data-product="box plateau formule" aria-label="Commander une formule ou box">
+            <div class="cat-emoji" aria-hidden="true">🎁</div>
+            <span class="cat-tile-name">Formules &amp; Box</span>
+            <span class="cat-tile-price">Box et plateaux</span>
+          </button>
+
+          <!-- Cakes & Petites Tartes -->
+          <button class="cat-tile" type="button" data-open-order data-product="cake tarte" aria-label="Commander des cakes et tartes">
+            <div class="cat-emoji" aria-hidden="true">🍰</div>
+            <span class="cat-tile-name">Cakes &amp;<br>Petites Tartes</span>
+            <span class="cat-tile-price">Pâtisseries individuelles</span>
+          </button>
+
+          <!-- Commandes Spéciales -->
+          <button class="cat-tile" type="button" data-open-order data-product="mariage événement special" aria-label="Passer une commande spéciale">
+            <div class="cat-emoji" aria-hidden="true">👑</div>
+            <span class="cat-tile-name">Commandes<br>Spéciales</span>
+            <span class="cat-tile-price">Mariages &amp; événements</span>
+          </button>
+
         </div>
       </div>
     </section>

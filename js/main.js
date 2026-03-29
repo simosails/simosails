@@ -122,6 +122,12 @@
 
   // ─── CATALOG DEFINITION (6 CATEGORIES, 3 PRICING TYPES) ─
 
+  // ─── PORTION / WEIGHT CONSTANTS ───────────────────────
+  const WEIGHT_STOPS_G = [250, 500, 750, 1000, 1500, 2000];
+  const WEIGHT_LABELS  = ['250g', '500g', '750g', '1 kg', '1.5 kg', '2 kg', 'Sur mesure'];
+  const EVENT_PERSON_STOPS  = [5, 10, 15, 20, 25, 30];
+  const EVENT_PERSON_LABELS = ['5', '10', '15', '20', '25', '30', 'Plus'];
+
   const PRICING_TYPES = {
     UNIT: 'unit',           // Fixed price per item
     WEIGHT: 'weight',       // Price per kg, selectable weights
@@ -269,25 +275,19 @@
     'special': {
       name: "Commandes Spéciales",
       pricingType: PRICING_TYPES.PORTION,
-      portionConfig: {
-        min: 5,
-        max: 30,
-        step: 5,
-        basePrice: 500,
-        incrementPrice: 400,
-        unitLabel: "personnes"
-      },
       items: [
         {
           id: "sp-mariage",
           name: "Forfait Mariage",
           surDevis: true,
+          uiType: 'marriage',
           description: "Wedding cake sur mesure + service complet"
         },
         {
           id: "sp-gateau-mesure",
           name: "Gâteau sur Mesure",
           surDevis: true,
+          uiType: 'events',
           description: "Création personnalisée pour votre événement"
         }
       ]
@@ -342,22 +342,23 @@
 
   function calculateItemPrice(item) {
     const category = CATALOG[item.categoryKey];
-
     switch (category.pricingType) {
       case PRICING_TYPES.UNIT:
       case PRICING_TYPES.FIXED:
         return (item.price || 0) * (item.quantity || 1);
-
-      case PRICING_TYPES.WEIGHT:
-        const weightKg = (item.weight || 0) / 1000;
-        return Math.round(weightKg * (item.pricePerKg || category.defaultPricePerKg || 0));
-
+      case PRICING_TYPES.WEIGHT: {
+        const kg = (item.weight || 0) / 1000;
+        return Math.round(kg * (item.pricePerKg || category.defaultPricePerKg || 0));
+      }
       case PRICING_TYPES.PORTION:
-        const config = category.portionConfig;
-        const portions = item.portions || config.min;
-        const additionalBlocks = Math.max(0, Math.ceil((portions - config.min) / config.step));
-        return config.basePrice + (additionalBlocks * config.incrementPrice);
-
+        if (item.surDevis) return 0;
+        if (category.portionConfig) {
+          const cfg = category.portionConfig;
+          const portions = item.portions || cfg.min;
+          const extra = Math.max(0, Math.ceil((portions - cfg.min) / cfg.step));
+          return cfg.basePrice + extra * cfg.incrementPrice;
+        }
+        return 0;
       default:
         return 0;
     }
@@ -470,84 +471,77 @@
         renderPortionBasedProducts(catKey);
         break;
       default:
-        renderStandardProducts(catKey);
+        renderUnitBasedProducts(catKey);
         break;
     }
   }
 
-  // ─── STANDARD PRODUCTS RENDERER (Unit/Fixed) ───────
+  // ─── UNIT PRODUCTS RENDERER (Unit/Fixed) ───────
 
-  function renderStandardProducts(catKey) {
+  function renderUnitBasedProducts(catKey) {
     const category = CATALOG[catKey];
     productListContainer.style.display = 'block';
     weightProductListContainer.style.display = 'none';
     portionProductListContainer.style.display = 'none';
-
     productListContainer.innerHTML = '';
 
-    category.items.forEach(product => {
+    category.items.forEach(function(product) {
+      const existing = cart.find(c => c.id === product.id);
+      const qty = existing ? existing.quantity : 0;
+
       const row = document.createElement('div');
-      row.className = 'product-row' + (product.isPlaceholder ? ' placeholder' : '');
-
-      const existingCartItem = cart.find(c => c.id === product.id);
-      const qty = existingCartItem ? existingCartItem.quantity : 0;
-
-      const priceText = product.isPlaceholder ?
-        "Prix à définir" :
-        (product.surDevis ? "Sur devis" : `${product.price} DH`);
-
+      row.className = 'product-row';
       row.innerHTML = `
         <div class="product-info">
-          <strong>${product.name}</strong>
-          ${product.description ? `<span>${product.description}</span>` : ''}
-          <span class="price">${priceText}</span>
+          <strong>${product.name || '—'}</strong>
+          <span>${product.price ? product.price + ' DH' : ''}</span>
         </div>
-        ${!product.isPlaceholder ? `
         <div class="product-stepper">
-          <button type="button" aria-label="Retirer" data-action="dec" data-id="${product.id}" ${qty === 0 ? 'disabled' : ''}>−</button>
-          <span class="qty-display">${qty}</span>
-          <button type="button" aria-label="Ajouter" data-action="inc" data-id="${product.id}">+</button>
+          <button type="button" class="stepper-dec" data-id="${product.id}" aria-label="Diminuer">−</button>
+          <span class="stepper-count" data-id="${product.id}">${qty}</span>
+          <button type="button" class="stepper-inc" data-id="${product.id}" aria-label="Augmenter">+</button>
         </div>
-        ` : '<span class="placeholder-badge">Bientôt disponible</span>'}
       `;
-
       productListContainer.appendChild(row);
     });
 
-    attachStandardProductListeners(catKey);
+    attachUnitProductListeners(catKey);
   }
 
-  function attachStandardProductListeners(catKey) {
-    productListContainer.querySelectorAll('button[data-action]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const action = e.target.getAttribute('data-action');
+  function attachUnitProductListeners(catKey) {
+    const category = CATALOG[catKey];
+
+    productListContainer.querySelectorAll('.stepper-inc').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const id = btn.dataset.id;
         const product = ITEMS_DICT[id];
-
-        const existingItem = cart.find(c => c.id === id);
-
-        if (action === 'inc') {
-          if (existingItem) {
-            existingItem.quantity++;
-          } else {
-            addToCart({
-              id: product.id,
-              name: product.name,
-              price: product.price,
-              quantity: 1,
-              categoryKey: catKey,
-              pricingType: CATALOG[catKey].pricingType
-            });
-          }
-        } else if (action === 'dec' && existingItem) {
-          existingItem.quantity--;
-          if (existingItem.quantity <= 0) {
-            removeFromCart(existingItem.cartId);
-          }
+        const existing = cart.find(c => c.id === id);
+        if (existing) {
+          updateCartItem(existing.cartId, { quantity: existing.quantity + 1 });
+        } else {
+          addToCart({ id, name: product.name, price: product.price || 0, quantity: 1, categoryKey: catKey, pricingType: category.pricingType });
         }
+        const countEl = productListContainer.querySelector(`.stepper-count[data-id="${id}"]`);
+        const updated = cart.find(c => c.id === id);
+        if (countEl && updated) countEl.textContent = updated.quantity;
+      });
+    });
 
-        updateCartUI();
-        renderStandardProducts(catKey); // Re-render to update UI
+    productListContainer.querySelectorAll('.stepper-dec').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const id = btn.dataset.id;
+        const existing = cart.find(c => c.id === id);
+        if (!existing) return;
+        if (existing.quantity <= 1) {
+          removeFromCart(existing.cartId);
+          const countEl = productListContainer.querySelector(`.stepper-count[data-id="${id}"]`);
+          if (countEl) countEl.textContent = 0;
+        } else {
+          updateCartItem(existing.cartId, { quantity: existing.quantity - 1 });
+          const countEl = productListContainer.querySelector(`.stepper-count[data-id="${id}"]`);
+          const updated = cart.find(c => c.id === id);
+          if (countEl && updated) countEl.textContent = updated.quantity;
+        }
       });
     });
   }
@@ -559,284 +553,316 @@
     productListContainer.style.display = 'none';
     weightProductListContainer.style.display = 'block';
     portionProductListContainer.style.display = 'none';
-
     weightProductListContainer.innerHTML = '';
 
-    category.items.forEach(product => {
-      const card = document.createElement('div');
-      card.className = 'weight-product-card' + (product.isPlaceholder ? ' placeholder' : '');
-
-      const existingCartItem = cart.find(c => c.id === product.id);
-      const selectedWeight = existingCartItem ? existingCartItem.weight : null;
-
+    category.items.forEach(function(product) {
+      const existing = cart.find(c => c.id === product.id);
+      const selWeight  = existing ? existing.weight : null;
       const pricePerKg = product.pricePerKg || category.defaultPricePerKg;
 
+      const stopIdx = selWeight !== null ? WEIGHT_STOPS_G.indexOf(selWeight) : -1;
+      const isCustom  = selWeight !== null && stopIdx === -1;
+      const sliderVal = isCustom ? WEIGHT_STOPS_G.length : (stopIdx >= 0 ? stopIdx : 0);
+      const hasSelection = selWeight !== null;
+
+      const card = document.createElement('div');
+      card.className = 'weight-product-card';
       card.innerHTML = `
         <div class="weight-product-header">
-          <strong>${product.name}</strong>
-          ${product.description ? `<span>${product.description}</span>` : ''}
-          <span class="price-per-kg">${pricePerKg} DH/kg</span>
+          <strong>${product.name || '—'}</strong>
+          ${product.description ? `<span class="wp-desc">${product.description}</span>` : ''}
+          <span class="price-per-kg">${pricePerKg} DH / kg</span>
         </div>
 
-        ${!product.isPlaceholder ? `
-        <div class="weight-selector">
-          <p>Choisissez le poids :</p>
-          <div class="weight-options">
-            ${category.weightOptions.map(g => {
-              const price = Math.round((g / 1000) * pricePerKg);
-              const isSelected = selectedWeight === g;
-              return `
-                <button type="button"
-                  class="weight-btn ${isSelected ? 'selected' : ''}"
-                  data-weight="${g}"
-                  data-id="${product.id}">
-                  <span class="weight-label">${formatWeight(g)}</span>
-                  <span class="weight-price">${price} DH</span>
-                </button>
-              `;
-            }).join('')}
+        <div class="ws-wrap">
+          <div class="ws-labels" aria-hidden="true">
+            ${WEIGHT_LABELS.map((l, i) => `<span class="${i === sliderVal ? 'ws-label-active' : ''}">${l}</span>`).join('')}
           </div>
-
-          <div class="custom-weight-section">
-            <button type="button" class="custom-weight-toggle" data-id="${product.id}">
-              ${selectedWeight && !category.weightOptions.includes(selectedWeight) ? 'Modifier poids personnalisé' : 'Poids personnalisé (min 1kg)'}
-            </button>
-
-            <div class="custom-weight-input" style="display: ${selectedWeight && !category.weightOptions.includes(selectedWeight) ? 'flex' : 'none'}">
-              <input type="number"
-                id="custom-weight-${product.id}"
-                placeholder="Grammes"
-                min="${category.customMin}"
-                max="${category.customMax}"
-                step="${category.customStep}"
-                value="${selectedWeight && !category.weightOptions.includes(selectedWeight) ? selectedWeight : ''}">
-              <button type="button" class="btn-apply-custom" data-id="${product.id}">Appliquer</button>
+          <div class="ws-track-wrap">
+            <input type="range" class="ws-slider"
+              min="0" max="${WEIGHT_STOPS_G.length}" step="1"
+              value="${sliderVal}"
+              data-id="${product.id}" data-cat="${catKey}"
+              aria-label="Quantité de ${product.name || 'produit'}">
+            <div class="ws-dots" aria-hidden="true">
+              ${WEIGHT_LABELS.map((_, i) => `<span class="ws-dot${i === WEIGHT_STOPS_G.length ? ' ws-dot-custom' : ''}${i === sliderVal ? ' ws-dot-on' : ''}"></span>`).join('')}
             </div>
-            ${selectedWeight && !category.weightOptions.includes(selectedWeight) ? `
-              <div class="custom-price-preview">
-                Prix: ${calculateItemPrice({ ...product, weight: selectedWeight, categoryKey: catKey })} DH
-              </div>
-            ` : ''}
           </div>
-
-          ${selectedWeight ? `
-          <div class="weight-actions">
-            <button type="button" class="btn-remove-weight" data-id="${product.id}">
-              Retirer du panier
-            </button>
-          </div>
-          ` : ''}
         </div>
-        ` : '<span class="placeholder-badge">Bientôt disponible</span>'}
+
+        <div class="ws-custom${isCustom ? ' ws-custom-open' : ''}" id="wsc-${product.id}">
+          <input type="number" class="ws-custom-input"
+            placeholder="Poids en grammes…"
+            min="100" max="10000" step="50"
+            value="${isCustom ? selWeight : ''}"
+            data-id="${product.id}"
+            aria-label="Poids personnalisé en grammes">
+          <span class="ws-custom-unit">g</span>
+        </div>
+
+        <div class="ws-preview" id="wsp-${product.id}">
+          ${hasSelection
+            ? `<span class="ws-qty">${formatWeight(selWeight)}</span><span class="ws-arrow">→</span><span class="ws-price">${Math.round(selWeight / 1000 * pricePerKg)} DH</span>`
+            : `<span class="ws-hint">Déplacez le curseur pour voir le prix</span>`}
+        </div>
+
+        ${existing ? `<div class="weight-actions"><button type="button" class="btn-remove-weight" data-id="${product.id}">Retirer du panier</button></div>` : ''}
       `;
 
       weightProductListContainer.appendChild(card);
     });
 
-    attachWeightProductListeners(catKey);
+    attachWeightSliderListeners(catKey);
   }
 
-  function attachWeightProductListeners(catKey) {
-    // Preset weight buttons
-    weightProductListContainer.querySelectorAll('.weight-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
-        const weight = parseInt(e.currentTarget.getAttribute('data-weight'));
-        const product = ITEMS_DICT[id];
+  function attachWeightSliderListeners(catKey) {
+    const category = CATALOG[catKey];
 
-        // Remove existing item if present
-        const existing = cart.find(c => c.id === id);
-        if (existing) {
-          removeFromCart(existing.cartId);
+    weightProductListContainer.querySelectorAll('.ws-slider').forEach(function(slider) {
+      const id         = slider.dataset.id;
+      const product    = ITEMS_DICT[id];
+      const pricePerKg = product.pricePerKg || category.defaultPricePerKg;
+      const card       = slider.closest('.weight-product-card');
+      const customDiv  = document.getElementById('wsc-' + id);
+      const preview    = document.getElementById('wsp-' + id);
+      const labels     = card.querySelectorAll('.ws-labels span');
+      const dots       = card.querySelectorAll('.ws-dot');
+
+      function setPreview(grams) {
+        preview.innerHTML = `<span class="ws-qty">${formatWeight(grams)}</span><span class="ws-arrow">→</span><span class="ws-price">${Math.round(grams / 1000 * pricePerKg)} DH</span>`;
+      }
+
+      function syncCart(grams) {
+        const ex = cart.find(c => c.id === id);
+        if (ex) {
+          updateCartItem(ex.cartId, { weight: grams });
+        } else {
+          addToCart({ id, name: product.name, weight: grams, pricePerKg, categoryKey: catKey, pricingType: PRICING_TYPES.WEIGHT });
         }
+      }
 
-        // Add new with selected weight
-        addToCart({
-          id: product.id,
-          name: product.name,
-          pricePerKg: product.pricePerKg || CATALOG[catKey].defaultPricePerKg,
-          weight: weight,
-          categoryKey: catKey,
-          pricingType: PRICING_TYPES.WEIGHT
-        });
+      slider.addEventListener('input', function() {
+        const val      = parseInt(slider.value);
+        const isCustom = val === WEIGHT_STOPS_G.length;
 
-        renderWeightBasedProducts(catKey);
-      });
-    });
+        labels.forEach((l, i) => l.classList.toggle('ws-label-active', i === val));
+        dots.forEach((d, i)   => d.classList.toggle('ws-dot-on', i === val));
+        customDiv.classList.toggle('ws-custom-open', isCustom);
 
-    // Custom weight toggle
-    weightProductListContainer.querySelectorAll('.custom-weight-toggle').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
-        const inputSection = e.currentTarget.nextElementSibling;
-        const isVisible = inputSection.style.display === 'flex';
-        inputSection.style.display = isVisible ? 'none' : 'flex';
-        if (!isVisible) {
-          setTimeout(() => document.getElementById(`custom-weight-${id}`).focus(), 100);
+        if (isCustom) {
+          preview.innerHTML = '<span class="ws-hint">Entrez un poids ci-dessous</span>';
+          setTimeout(function() { customDiv.querySelector('input').focus(); }, 60);
+        } else {
+          const grams = WEIGHT_STOPS_G[val];
+          setPreview(grams);
+          syncCart(grams);
         }
       });
-    });
 
-    // Apply custom weight
-    weightProductListContainer.querySelectorAll('.btn-apply-custom').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
-        const input = document.getElementById(`custom-weight-${id}`);
-        const weight = parseInt(input.value);
-        const product = ITEMS_DICT[id];
-        const category = CATALOG[catKey];
-
-        // Validation
-        if (isNaN(weight) || weight < category.customMin) {
-          alert(`Poids minimum: ${formatWeight(category.customMin)}`);
+      customDiv.querySelector('input').addEventListener('input', function(e) {
+        const grams = parseInt(e.target.value);
+        if (!grams || grams < 100) {
+          preview.innerHTML = '<span class="ws-hint">Poids minimum : 100g</span>';
           return;
         }
-        if (weight > category.customMax) {
-          alert(`Poids maximum: ${formatWeight(category.customMax)}`);
-          return;
-        }
-
-        // Remove existing
-        const existing = cart.find(c => c.id === id);
-        if (existing) {
-          removeFromCart(existing.cartId);
-        }
-
-        // Add custom weight item
-        addToCart({
-          id: product.id,
-          name: product.name,
-          pricePerKg: product.pricePerKg || category.defaultPricePerKg,
-          weight: weight,
-          categoryKey: catKey,
-          pricingType: PRICING_TYPES.WEIGHT,
-          isCustomWeight: true
-        });
-
-        renderWeightBasedProducts(catKey);
+        setPreview(grams);
+        syncCart(grams);
       });
     });
 
-    // Remove from cart
-    weightProductListContainer.querySelectorAll('.btn-remove-weight').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
-        const existing = cart.find(c => c.id === id);
-        if (existing) {
-          removeFromCart(existing.cartId);
-          renderWeightBasedProducts(catKey);
-        }
+    weightProductListContainer.querySelectorAll('.btn-remove-weight').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const ex = cart.find(c => c.id === btn.dataset.id);
+        if (ex) { removeFromCart(ex.cartId); renderWeightBasedProducts(catKey); }
       });
     });
   }
 
-  // ─── PORTION-BASED PRODUCTS RENDERER ───────────────
+  // ─── SPECIAL ITEMS RENDERER ──────────────────────────
 
   function renderPortionBasedProducts(catKey) {
     const category = CATALOG[catKey];
     productListContainer.style.display = 'none';
     weightProductListContainer.style.display = 'none';
     portionProductListContainer.style.display = 'block';
-
     portionProductListContainer.innerHTML = '';
 
-    category.items.forEach(product => {
+    category.items.forEach(function(product) {
+      const existing = cart.find(c => c.id === product.id);
       const card = document.createElement('div');
       card.className = 'portion-product-card';
 
-      const existingCartItem = cart.find(c => c.id === product.id);
-      const selectedPortions = existingCartItem ? existingCartItem.portions : null;
-      const config = category.portionConfig;
-
-      card.innerHTML = `
-        <div class="portion-product-header">
-          <strong>${product.name}</strong>
-          ${product.description ? `<span>${product.description}</span>` : ''}
-          <span class="portion-pricing-info">
-            À partir de ${config.basePrice} DH (${config.min} ${config.unitLabel})
-          </span>
-        </div>
-
-        <div class="portion-selector">
-          <p>Nombre de ${config.unitLabel} :</p>
-          <div class="portion-options">
-            ${[5, 10, 15, 20, 25, 30].map(num => {
-              const isSelected = selectedPortions === num;
-              const price = calculatePortionPrice(num, config);
-              return `
-                <button type="button"
-                  class="portion-btn ${isSelected ? 'selected' : ''}"
-                  data-portions="${num}"
-                  data-id="${product.id}">
-                  <span class="portion-number">${num}</span>
-                  <span class="portion-price">${formatPrice(price, product.surDevis)}</span>
-                </button>
-              `;
-            }).join('')}
+      if (product.uiType === 'marriage') {
+        renderMarriageCard(card, product, existing);
+      } else if (product.uiType === 'events') {
+        renderEventsCard(card, product, existing);
+      } else {
+        // Fallback: generic portion UI for any future items
+        card.innerHTML = `
+          <div class="portion-product-header">
+            <strong>${product.name || '—'}</strong>
+            ${product.description ? `<span>${product.description}</span>` : ''}
           </div>
-
-          ${product.surDevis ? `
-          <div class="devis-notice">
-            <span>⚠️ Ce produit nécessite un devis personnalisé</span>
-          </div>
-          ` : ''}
-
-          ${selectedPortions ? `
-          <div class="portion-actions">
-            <button type="button" class="btn-remove-portion" data-id="${product.id}">
-              Retirer du panier
-            </button>
-          </div>
-          ` : ''}
-        </div>
-      `;
+          <div class="devis-notice"><span>⚠️ Devis personnalisé — contactez-nous par WhatsApp</span></div>
+        `;
+      }
 
       portionProductListContainer.appendChild(card);
     });
 
-    attachPortionProductListeners(catKey);
+    attachSpecialListeners(catKey);
   }
 
-  function calculatePortionPrice(portions, config) {
-    const additionalBlocks = Math.max(0, Math.ceil((portions - config.min) / config.step));
-    return config.basePrice + (additionalBlocks * config.incrementPrice);
+  function renderMarriageCard(card, product, existing) {
+    const savedPersons = existing ? existing.persons : '';
+    card.innerHTML = `
+      <div class="portion-product-header">
+        <strong>${product.name}</strong>
+        ${product.description ? `<span>${product.description}</span>` : ''}
+      </div>
+      <div class="marriage-wrap">
+        <label class="marriage-label" for="mg-${product.id}">Nombre d'invités</label>
+        <div class="marriage-input-row">
+          <input type="number"
+                 id="mg-${product.id}"
+                 class="marriage-guests"
+                 placeholder="Ex : 80"
+                 min="2"
+                 value="${savedPersons}"
+                 data-id="${product.id}"
+                 inputmode="numeric"
+                 aria-label="Nombre d'invités pour le mariage">
+          <span class="marriage-unit">personnes</span>
+        </div>
+      </div>
+      <div class="devis-notice"><span>Devis personnalisé · Confirmation sous 2h par WhatsApp</span></div>
+      ${existing ? `<div class="portion-actions"><button type="button" class="btn-remove-portion" data-id="${product.id}">Retirer</button></div>` : ''}
+    `;
   }
 
-  function attachPortionProductListeners(catKey) {
-    portionProductListContainer.querySelectorAll('.portion-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
-        const portions = parseInt(e.currentTarget.getAttribute('data-portions'));
-        const product = ITEMS_DICT[id];
+  function renderEventsCard(card, product, existing) {
+    const savedPersons = existing ? existing.persons : null;
+    const stopIdx  = savedPersons !== null ? EVENT_PERSON_STOPS.indexOf(savedPersons) : -1;
+    const isCustom = savedPersons !== null && stopIdx === -1;
+    const sliderVal = isCustom ? EVENT_PERSON_STOPS.length : (stopIdx >= 0 ? stopIdx : 0);
+    const hasSelection = savedPersons !== null;
 
-        // Remove existing
+    card.innerHTML = `
+      <div class="portion-product-header">
+        <strong>${product.name}</strong>
+        ${product.description ? `<span>${product.description}</span>` : ''}
+      </div>
+
+      <div class="ps-wrap">
+        <div class="ps-labels" aria-hidden="true">
+          ${EVENT_PERSON_LABELS.map((l, i) => `<span class="${i === sliderVal ? 'ps-label-active' : ''}">${l}</span>`).join('')}
+        </div>
+        <div class="ps-track-wrap">
+          <input type="range" class="ps-slider"
+            min="0" max="${EVENT_PERSON_STOPS.length}" step="1"
+            value="${sliderVal}"
+            data-id="${product.id}"
+            aria-label="Nombre de personnes">
+          <div class="ps-dots" aria-hidden="true">
+            ${EVENT_PERSON_LABELS.map((_, i) => `<span class="ps-dot${i === EVENT_PERSON_STOPS.length ? ' ps-dot-custom' : ''}${i === sliderVal ? ' ps-dot-on' : ''}"></span>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="ps-custom${isCustom ? ' ps-custom-open' : ''}" id="psc-${product.id}">
+        <input type="number" class="ps-custom-input"
+          placeholder="Nombre de personnes…"
+          min="31"
+          value="${isCustom ? savedPersons : ''}"
+          data-id="${product.id}"
+          inputmode="numeric"
+          aria-label="Nombre de personnes personnalisé">
+        <span class="ps-custom-unit">personnes</span>
+      </div>
+
+      <div class="ps-preview" id="psp-${product.id}">
+        ${hasSelection
+          ? `<span class="ps-persons">${savedPersons} personnes</span><span class="ps-devis-tag">Sur devis</span>`
+          : `<span class="ps-hint">Sélectionnez le nombre d'invités</span>`}
+      </div>
+      <div class="devis-notice"><span>Tarif selon le type de gâteau · Devis sous 2h</span></div>
+
+      ${existing ? `<div class="portion-actions"><button type="button" class="btn-remove-portion" data-id="${product.id}">Retirer</button></div>` : ''}
+    `;
+  }
+
+  function attachSpecialListeners(catKey) {
+    // — Marriage: number input —
+    portionProductListContainer.querySelectorAll('.marriage-guests').forEach(function(input) {
+      const id      = input.dataset.id;
+      const product = ITEMS_DICT[id];
+
+      input.addEventListener('input', function() {
+        const persons = parseInt(input.value);
+        if (!persons || persons < 2) return;
         const existing = cart.find(c => c.id === id);
         if (existing) {
-          removeFromCart(existing.cartId);
+          updateCartItem(existing.cartId, { persons });
+        } else {
+          addToCart({ id, name: product.name, persons, surDevis: true, uiType: 'marriage', categoryKey: catKey, pricingType: PRICING_TYPES.PORTION });
         }
-
-        // Add new
-        addToCart({
-          id: product.id,
-          name: product.name,
-          portions: portions,
-          surDevis: product.surDevis,
-          categoryKey: catKey,
-          pricingType: PRICING_TYPES.PORTION
-        });
-
-        renderPortionBasedProducts(catKey);
       });
     });
 
-    portionProductListContainer.querySelectorAll('.btn-remove-portion').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.getAttribute('data-id');
+    // — Events: precision slider —
+    portionProductListContainer.querySelectorAll('.ps-slider').forEach(function(slider) {
+      const id       = slider.dataset.id;
+      const product  = ITEMS_DICT[id];
+      const card     = slider.closest('.portion-product-card');
+      const customDiv = document.getElementById('psc-' + id);
+      const preview   = document.getElementById('psp-' + id);
+      const labels    = card.querySelectorAll('.ps-labels span');
+      const dots      = card.querySelectorAll('.ps-dot');
+
+      function setPreview(persons) {
+        preview.innerHTML = `<span class="ps-persons">${persons} personnes</span><span class="ps-devis-tag">Sur devis</span>`;
+      }
+
+      function syncCart(persons) {
         const existing = cart.find(c => c.id === id);
         if (existing) {
-          removeFromCart(existing.cartId);
-          renderPortionBasedProducts(catKey);
+          updateCartItem(existing.cartId, { persons });
+        } else {
+          addToCart({ id, name: product.name, persons, surDevis: true, uiType: 'events', categoryKey: catKey, pricingType: PRICING_TYPES.PORTION });
         }
+      }
+
+      slider.addEventListener('input', function() {
+        const val      = parseInt(slider.value);
+        const isCustom = val === EVENT_PERSON_STOPS.length;
+
+        labels.forEach((l, i) => l.classList.toggle('ps-label-active', i === val));
+        dots.forEach((d, i)   => d.classList.toggle('ps-dot-on', i === val));
+        customDiv.classList.toggle('ps-custom-open', isCustom);
+
+        if (isCustom) {
+          preview.innerHTML = '<span class="ps-hint">Entrez le nombre ci-dessous</span>';
+          setTimeout(function() { customDiv.querySelector('input').focus(); }, 60);
+        } else {
+          const persons = EVENT_PERSON_STOPS[val];
+          setPreview(persons);
+          syncCart(persons);
+        }
+      });
+
+      customDiv.querySelector('input').addEventListener('input', function(e) {
+        const persons = parseInt(e.target.value);
+        if (!persons || persons < 1) return;
+        setPreview(persons);
+        syncCart(persons);
+      });
+    });
+
+    // — Remove buttons —
+    portionProductListContainer.querySelectorAll('.btn-remove-portion').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const ex = cart.find(c => c.id === btn.dataset.id);
+        if (ex) { removeFromCart(ex.cartId); renderPortionBasedProducts(catKey); }
       });
     });
   }
@@ -884,9 +910,10 @@
         let details = '';
 
         if (item.pricingType === PRICING_TYPES.WEIGHT) {
-          details = ` — ${formatWeight(item.weight)}`;
+          const w = item.weight || 0;
+          details = ` — ${w >= 1000 ? (w/1000) + ' kg' : w + 'g'}`;
         } else if (item.pricingType === PRICING_TYPES.PORTION) {
-          details = ` — ${item.portions} personnes`;
+          details = ` — ${item.persons || item.portions} personnes`;
         } else if (item.quantity > 1) {
           details = ` × ${item.quantity}`;
         }
@@ -1062,21 +1089,22 @@
 
         if (item.pricingType === PRICING_TYPES.WEIGHT) {
           const pricePerKg = item.pricePerKg || CATALOG[item.categoryKey].defaultPricePerKg;
+          const w = item.weight || 0;
+          const wStr = w >= 1000 ? (w/1000) + ' kg' : w + 'g';
+          // Check if custom (not in precision stops)
+          const isCustom = !WEIGHT_STOPS_G.includes(w);
+
           msg += `• ${item.name}\n`;
-          msg += `  └ ${formatWeight(item.weight)} @ ${pricePerKg} DH/kg = ${price} DH\n`;
+          if (isCustom) {
+            msg += `  └ ⚖️ Sur mesure : ${wStr} @ ${pricePerKg} DH/kg = ${price} DH\n`;
+          } else {
+            msg += `  └ ${wStr} @ ${pricePerKg} DH/kg = ${price} DH\n`;
+          }
           fixedTotal += price;
 
         } else if (item.pricingType === PRICING_TYPES.PORTION) {
-          const config = CATALOG[item.categoryKey].portionConfig;
           msg += `• ${item.name}\n`;
-          msg += `  └ ${item.portions} personnes\n`;
-          if (item.surDevis) {
-            msg += `  └ 💰 *SUR DEVIS* (à confirmer)\n`;
-          } else {
-            msg += `  └ ${price} DH\n`;
-            fixedTotal += price;
-          }
-
+          msg += `  └ 👥 ${item.persons || item.portions} personnes · SUR DEVIS\n`;
         } else {
           // Unit/Fixed
           const lineTotal = price;
@@ -1100,7 +1128,7 @@
     if (totals.devisItems.length > 0) {
       msg += `⚠️ *Articles sur devis:* ${totals.devisItems.length}\n`;
       totals.devisItems.forEach(item => {
-        msg += `   - ${item.name} (${item.portions} personnes)\n`;
+        msg += `   - ${item.name} (${item.persons || item.portions} personnes)\n`;
       });
     }
 
@@ -1186,5 +1214,72 @@
   window.openOrderModal = openModal;
   window.getCart = () => cart;
   window.clearCart = clearCart;
+
+  // ─── ANTIGRAVITY HERO PARALLAX ─────────────────────────
+  function initAntigravity() {
+    const heroDom = document.querySelector('.hero-images');
+    if (!heroDom) return;
+
+    const main = heroDom.querySelector('.hero-main');
+    const tall = heroDom.querySelector('.hero-tall');
+    const side = heroDom.querySelector('.hero-side');
+    if (!main || !tall || !side) return;
+
+    // Ambient floating state variables
+    let tick = 0;
+    
+    // Performance optimized scroll loop
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    function renderParallax() {
+      tick += 0.05; // Ambient time
+
+      // Calculates how far down the page we've scrolled
+      // If we scroll past hero (say 800px), limit calculation to avoid pointless math
+      const sy = Math.min(lastScrollY, 800);
+
+      // Core parameters:
+      // Translate Z and diffuses shadow based on scroll
+      const zMain = 10 + (sy * 0.15); // Pops up
+      const zTall = 5 + (sy * 0.1); 
+      const zSide = 15 + (sy * 0.2); // Pops up the most
+
+      // Ambient floats
+      const fMain = Math.sin(tick) * 8;
+      const fTall = Math.cos(tick * 0.8) * 12;
+      const fSide = Math.sin(tick * 1.2) * 6;
+
+      // Rotations on scroll (parallax tilting)
+      const rX = sy * 0.02;
+      
+      // Apply transforms
+      main.style.transform = `translate3d(0, ${fMain - sy * 0.1}px, ${zMain}px) rotateX(${rX}deg) rotateY(-2deg)`;
+      tall.style.transform = `translate3d(0, ${fTall - sy * 0.05}px, ${zTall}px) rotateX(${-rX}deg) rotateY(3deg)`;
+      side.style.transform = `translate3d(0, ${fSide - sy * 0.15}px, ${zSide}px) rotateX(${rX * 1.5}deg) rotateY(-1deg)`;
+
+      // Dynamic shadow diffusion
+      const diffMain = 25 + (sy * 0.1);
+      const diffTall = 20 + (sy * 0.05);
+      const diffSide = 30 + (sy * 0.15);
+      
+      main.style.boxShadow = `0 ${15 + (sy * 0.05)}px ${diffMain}px rgba(181, 84, 26, ${0.25 - (sy * 0.0002)})`;
+      tall.style.boxShadow = `0 ${10 + (sy * 0.05)}px ${diffTall}px rgba(181, 84, 26, ${0.25 - (sy * 0.0002)})`;
+      side.style.boxShadow = `0 ${20 + (sy * 0.05)}px ${diffSide}px rgba(181, 84, 26, ${0.25 - (sy * 0.0002)})`;
+
+      ticking = false;
+      requestAnimationFrame(renderParallax);
+    }
+
+    // Start loop
+    requestAnimationFrame(renderParallax);
+
+    window.addEventListener('scroll', () => {
+      lastScrollY = window.scrollY;
+    }, { passive: true });
+  }
+
+  // Small timeout to let entry animations finish before injecting persistent JS transforms
+  setTimeout(initAntigravity, 1000);
 
 })();

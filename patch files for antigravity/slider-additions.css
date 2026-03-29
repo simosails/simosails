@@ -1,0 +1,386 @@
+/* ═══════════════════════════════════════════════════════════
+   Lartica Bakehouse — SLIDER & SPECIAL UI ADDITIONS
+   Append to the end of styles.css
+   ═══════════════════════════════════════════════════════════ */
+
+
+/* ─── PRECISION SLIDER SHARED BASE ──────────────────────── */
+.ws-wrap,
+.ps-wrap {
+  margin: 1.2rem 0 0.5rem;
+}
+
+.ws-labels,
+.ps-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.ws-labels span,
+.ps-labels span {
+  font-size: 0.7rem;
+  color: var(--muted-lt);
+  text-align: center;
+  line-height: 1;
+  transition: color var(--transition), font-weight var(--transition);
+  flex: 1;
+}
+
+.ws-label-active,
+.ps-label-active {
+  color: var(--gold) !important;
+  font-weight: 600;
+}
+
+.ws-track-wrap,
+.ps-track-wrap {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+/* Slider input */
+.ws-slider,
+.ps-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: linear-gradient(to right, var(--gold) 0%, var(--gold) 0%, var(--glass-border) 0%);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  display: block;
+}
+
+/* Update the gradient fill as slider moves — done via JS or CSS trick */
+.ws-slider::-webkit-slider-thumb,
+.ps-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--gold);
+  box-shadow: 0 2px 10px rgba(181, 84, 26, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ws-slider::-webkit-slider-thumb:hover,
+.ps-slider::-webkit-slider-thumb:hover,
+.ws-slider:focus::-webkit-slider-thumb,
+.ps-slider:focus::-webkit-slider-thumb {
+  transform: scale(1.25);
+  box-shadow: 0 4px 16px rgba(181, 84, 26, 0.35);
+}
+
+.ws-slider::-moz-range-thumb,
+.ps-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--gold);
+  box-shadow: 0 2px 10px rgba(181, 84, 26, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+/* Dot indicators under the track */
+.ws-dots,
+.ps-dots {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.ws-dot,
+.ps-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted-lt);
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.ws-dot-on,
+.ps-dot-on {
+  background: var(--gold);
+  transform: scale(1.6);
+}
+
+.ws-dot-custom,
+.ps-dot-custom {
+  background: var(--ink);
+  opacity: 0.35;
+}
+
+.ws-dot-custom.ws-dot-on,
+.ps-dot-custom.ps-dot-on {
+  background: var(--ink);
+  opacity: 1;
+  transform: scale(1.6);
+}
+
+
+/* ─── CUSTOM INPUT REVEAL ────────────────────────────────── */
+.ws-custom,
+.ps-custom {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.75rem 0;
+  padding: 0.8rem 1rem;
+  background: rgba(200, 150, 62, 0.06);
+  border-radius: var(--r-sm);
+  border: 1px dashed rgba(181, 84, 26, 0.3);
+  animation: slide-in-soft 0.25s ease;
+}
+
+.ws-custom-open,
+.ps-custom-open {
+  display: flex;
+}
+
+@keyframes slide-in-soft {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ws-custom input,
+.ps-custom input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  background: var(--white);
+  color: var(--ink);
+  transition: border-color var(--transition);
+}
+
+.ws-custom input:focus,
+.ps-custom input:focus {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(181, 84, 26, 0.1);
+}
+
+.ws-custom-unit,
+.ps-custom-unit {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+/* ─── PRICE / PERSONS PREVIEW ────────────────────────────── */
+.ws-preview,
+.ps-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: rgba(200, 150, 62, 0.08);
+  border-radius: var(--r-sm);
+  margin-top: 0.75rem;
+  min-height: 42px;
+  transition: background 0.2s;
+}
+
+.ws-qty,
+.ps-persons {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.ws-arrow {
+  color: var(--muted-lt);
+  font-size: 0.9rem;
+}
+
+.ws-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+.ws-hint,
+.ps-hint {
+  font-size: 0.82rem;
+  color: var(--muted-lt);
+  font-style: italic;
+}
+
+.ps-devis-tag {
+  display: inline-block;
+  background: rgba(181, 84, 26, 0.1);
+  color: var(--gold);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+
+/* ─── MARRIAGE INPUT ─────────────────────────────────────── */
+.marriage-wrap {
+  margin: 1rem 0;
+}
+
+.marriage-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.marriage-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.marriage-guests {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.05rem;
+  background: var(--white);
+  color: var(--ink);
+  transition: border-color var(--transition);
+}
+
+.marriage-guests:focus {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(181, 84, 26, 0.1);
+}
+
+.marriage-unit {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+/* ─── MENU CATEGORY GRID (replaces .menu-cta) ───────────── */
+.menu-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.9rem;
+  margin-top: 3rem;
+}
+
+.cat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.5rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  color: var(--ink);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  animation: cat-float 3.5s ease-in-out infinite;
+}
+
+.cat-tile:nth-child(1) { animation-delay: 0s; }
+.cat-tile:nth-child(2) { animation-delay: 0.35s; }
+.cat-tile:nth-child(3) { animation-delay: 0.7s; }
+.cat-tile:nth-child(4) { animation-delay: 1.05s; }
+.cat-tile:nth-child(5) { animation-delay: 1.4s; }
+.cat-tile:nth-child(6) { animation-delay: 1.75s; }
+
+@keyframes cat-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.cat-tile:hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 24px rgba(181, 84, 26, 0.12);
+  animation-play-state: paused;
+  transform: translateY(-6px);
+}
+
+.cat-tile:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.cat-tile svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s ease;
+}
+
+.cat-tile:hover svg {
+  transform: scale(1.15);
+}
+
+.cat-tile-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.cat-tile-price {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 760px) {
+  .menu-categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .cat-tile {
+    padding: 1rem 0.4rem 0.85rem;
+  }
+  .cat-tile svg { width: 26px; height: 26px; }
+  .cat-tile-name { font-size: 0.78rem; }
+}
+
+@media (max-width: 400px) {
+  .menu-categories-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+
+/* ─── RESPONSIVE WEIGHT/PERSON ADJUSTMENTS ───────────────── */
+@media (max-width: 760px) {
+  .ws-labels span,
+  .ps-labels span {
+    font-size: 0.65rem;
+  }
+}
