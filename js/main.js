@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   Lartica Bakehouse — Main JavaScript (Enhanced Cart System)
-   Pâtisserie artisanale franco-marocaine · Fès
+   Lartica Bakehouse — Main JavaScript (Rebuilt)
    ═══════════════════════════════════════════════════════════ */
 
 (function() {
@@ -8,24 +7,17 @@
 
   const WHATSAPP_NUMBER = '212664727887';
 
-  // ═══════════════════════════════════════════════════════════
-  // SECTION 1: EXISTING FUNCTIONALITY (PRESERVED)
-  // ═══════════════════════════════════════════════════════════
-
   // ─── DOM REFERENCES ──────────────────────────────────
   const header = document.getElementById('site-header');
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  // ─── HEADER SHADOW ON SCROLL (Debounced) ─────────────
+  // ─── HEADER SHADOW ON SCROLL ─────────────────────────
   let scrollTicking = false;
   window.addEventListener('scroll', function() {
     if (!scrollTicking) {
       window.requestAnimationFrame(function() {
-        const y = window.scrollY;
-        if (header) {
-          header.classList.toggle('scrolled', y > 20);
-        }
+        if (header) header.classList.toggle('scrolled', window.scrollY > 20);
         scrollTicking = false;
       });
       scrollTicking = true;
@@ -54,40 +46,20 @@
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
       });
     }, { threshold: 0.12 });
-    document.querySelectorAll('.fade-up').forEach(function(el) {
-      observer.observe(el);
-    });
+    document.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
   } else {
-    document.querySelectorAll('.fade-up').forEach(function(el) {
-      el.classList.add('visible');
-    });
+    document.querySelectorAll('.fade-up').forEach(function(el) { el.classList.add('visible'); });
   }
 
-  // ─── PERFORMANCE: SHIMMER TICK & GPU LAYERS ──────────
+  // ─── HERO IMAGE LOADING ──────────────────────────────
   const heroImgs = document.querySelectorAll('.hero-main, .hero-tall, .hero-side');
-  heroImgs.forEach(img => {
-    if (img.complete) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', () => img.classList.add('loaded'));
-    }
+  heroImgs.forEach(function(img) {
+    if (img.complete) img.classList.add('loaded');
+    else img.addEventListener('load', function() { img.classList.add('loaded'); });
   });
-
-  const heroImagesContainer = document.querySelector('.hero-images');
-  if (heroImagesContainer) {
-    heroImagesContainer.addEventListener('mouseenter', () => {
-      heroImgs.forEach(img => img.style.willChange = 'transform');
-    });
-    heroImagesContainer.addEventListener('mouseleave', () => {
-      heroImgs.forEach(img => img.style.willChange = 'auto');
-    });
-  }
 
   // ─── SMOOTH SCROLL FOR ANCHOR LINKS ──────────────────
   document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
@@ -98,8 +70,7 @@
       if (target) {
         e.preventDefault();
         const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 68;
-        const top = target.getBoundingClientRect().top + window.scrollY - navH;
-        window.scrollTo({ top: top, behavior: 'smooth' });
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH, behavior: 'smooth' });
       }
     });
   });
@@ -109,41 +80,29 @@
   const heroSection = document.getElementById('hero');
   if (stickyCta && heroSection) {
     const stickyObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        stickyCta.style.display = e.isIntersecting ? 'none' : '';
-      });
+      entries.forEach(function(e) { stickyCta.style.display = e.isIntersecting ? 'none' : ''; });
     }, { threshold: 0 });
     stickyObserver.observe(heroSection);
   }
 
   // ═══════════════════════════════════════════════════════════
-  // SECTION 2: ENHANCED CART SYSTEM (NEW)
+  // CATALOG
   // ═══════════════════════════════════════════════════════════
 
-  // ─── CATALOG DEFINITION (6 CATEGORIES, 3 PRICING TYPES) ─
-
-  // ─── PORTION / WEIGHT CONSTANTS ───────────────────────
   const WEIGHT_STOPS_G = [250, 500, 750, 1000, 1500, 2000];
   const WEIGHT_LABELS  = ['250g', '500g', '750g', '1 kg', '1.5 kg', '2 kg', 'Sur mesure'];
-  const EVENT_PERSON_STOPS  = [5, 10, 15, 20, 25, 30];
-  const EVENT_PERSON_LABELS = ['5', '10', '15', '20', '25', '30', 'Plus'];
 
-  const PRICING_TYPES = {
-    UNIT: 'unit',           // Fixed price per item
-    WEIGHT: 'weight',       // Price per kg, selectable weights
-    PORTION: 'portion',     // Price per person, tiered pricing
-    FIXED: 'fixed'          // Bundle price (boxes)
-  };
+  const PRICING_TYPES = { UNIT: 'unit', WEIGHT: 'weight', PORTION: 'portion', FIXED: 'fixed' };
 
   const CATALOG = {
     'viennoiseries-trad': {
       name: "Viennoiseries Traditionnelles",
       pricingType: PRICING_TYPES.UNIT,
       items: [
-        { id: "vt-pain-choc", name: "Pain au chocolat", price: 7 },
         { id: "vt-croissant", name: "Croissant", price: 6 },
-        { id: "vt-pain-brise", name: "Pain brisé", price: 6 },
+        { id: "vt-pain-choc", name: "Pain au chocolat", price: 7 },
         { id: "vt-pain-suisse", name: "Pain Suisse", price: 7 },
+        { id: "vt-pain-brise", name: "Pain brisé", price: 6 },
         { id: "vt-chausson-fromage", name: "Chausson Fromage", price: 7 },
         { id: "vt-placeholder-1", name: "XX", price: 0, isPlaceholder: true },
         { id: "vt-placeholder-2", name: "XX", price: 0, isPlaceholder: true },
@@ -152,7 +111,6 @@
         { id: "vt-placeholder-5", name: "XX", price: 0, isPlaceholder: true }
       ]
     },
-
     'viennoiseries-modernes': {
       name: "Viennoiseries Modernes",
       pricingType: PRICING_TYPES.UNIT,
@@ -174,73 +132,22 @@
         { id: "vm-placeholder-7", name: "XX", price: 0, isPlaceholder: true }
       ]
     },
-
     'marocains': {
       name: "Classiques Marocains",
       pricingType: PRICING_TYPES.WEIGHT,
       defaultPricePerKg: 120,
-      weightOptions: [250, 500, 750, 1000, 2000],
-      customMin: 1000,
-      customMax: 5000,
-      customStep: 100,
       items: [
-        {
-          id: "cm-kaab-ghzal",
-          name: "Kaab Ghzal",
-          pricePerKg: 120,
-          description: "Cornes de gazelle aux amandes"
-        },
-        {
-          id: "cm-fekkas-amande",
-          name: "Fekkas Amande",
-          pricePerKg: 100,
-          description: "Biscuits croquants aux amandes"
-        },
-        {
-          id: "cm-ghraybe",
-          name: "Ghraybe",
-          pricePerKg: 110,
-          description: "Shortbread fondant"
-        },
-        {
-          id: "cm-ghriba-noix",
-          name: "Ghriba Noix",
-          pricePerKg: 130,
-          description: "Craquelé au sucre glace"
-        },
-        {
-          id: "cm-placeholder-1",
-          name: "XX",
-          pricePerKg: 100,
-          isPlaceholder: true
-        },
-        {
-          id: "cm-placeholder-2",
-          name: "XX",
-          pricePerKg: 100,
-          isPlaceholder: true
-        },
-        {
-          id: "cm-placeholder-3",
-          name: "XX",
-          pricePerKg: 100,
-          isPlaceholder: true
-        },
-        {
-          id: "cm-placeholder-4",
-          name: "XX",
-          pricePerKg: 100,
-          isPlaceholder: true
-        },
-        {
-          id: "cm-placeholder-5",
-          name: "XX",
-          pricePerKg: 100,
-          isPlaceholder: true
-        }
+        { id: "cm-kaab-ghzal", name: "Kaab Ghzal", pricePerKg: 120, description: "Cornes de gazelle aux amandes" },
+        { id: "cm-fekkas-amande", name: "Fekkas Amande", pricePerKg: 100, description: "Biscuits croquants aux amandes" },
+        { id: "cm-ghraybe", name: "Ghraybe", pricePerKg: 110, description: "Shortbread fondant" },
+        { id: "cm-ghriba-noix", name: "Ghriba Noix", pricePerKg: 130, description: "Craquelé au sucre glace" },
+        { id: "cm-placeholder-1", name: "XX", pricePerKg: 100, isPlaceholder: true },
+        { id: "cm-placeholder-2", name: "XX", pricePerKg: 100, isPlaceholder: true },
+        { id: "cm-placeholder-3", name: "XX", pricePerKg: 100, isPlaceholder: true },
+        { id: "cm-placeholder-4", name: "XX", pricePerKg: 100, isPlaceholder: true },
+        { id: "cm-placeholder-5", name: "XX", pricePerKg: 100, isPlaceholder: true }
       ]
     },
-
     'formules': {
       name: "Formules & Box",
       pricingType: PRICING_TYPES.FIXED,
@@ -254,7 +161,6 @@
         { id: "fb-placeholder-5", name: "XX", price: 0, isPlaceholder: true }
       ]
     },
-
     'cakes': {
       name: "Cakes & Petites Tartes",
       pricingType: PRICING_TYPES.UNIT,
@@ -271,66 +177,48 @@
         { id: "cake-placeholder-10", name: "XX", price: 0, isPlaceholder: true }
       ]
     },
-
     'special': {
       name: "Commandes Spéciales",
       pricingType: PRICING_TYPES.PORTION,
-      items: [
-        {
-          id: "sp-mariage",
-          name: "Forfait Mariage",
-          surDevis: true,
-          uiType: 'marriage',
-          description: "Wedding cake sur mesure + service complet"
-        },
-        {
-          id: "sp-gateau-mesure",
-          name: "Gâteau sur Mesure",
-          surDevis: true,
-          uiType: 'events',
-          description: "Création personnalisée pour votre événement"
-        }
-      ]
+      subCategories: [
+        { key: 'mariage', emoji: '🎂', name: 'Mariage', desc: 'Wedding cake & service complet' },
+        { key: 'anniversaire', emoji: '🎉', name: 'Anniversaire', desc: 'Gâteau sur mesure pour votre fête' },
+        { key: 'evenement', emoji: '🌟', name: 'Événement', desc: 'Plateaux & créations pour vos invités' }
+      ],
+      items: []
     }
   };
 
-  // Pre-compute flat dictionary for quick access
   const ITEMS_DICT = {};
-  Object.entries(CATALOG).forEach(([catKey, cat]) => {
-    cat.items.forEach(item => {
-      ITEMS_DICT[item.id] = { ...item, categoryKey: catKey, category: cat };
+  Object.entries(CATALOG).forEach(function([catKey, cat]) {
+    cat.items.forEach(function(item) {
+      ITEMS_DICT[item.id] = Object.assign({}, item, { categoryKey: catKey, category: cat });
     });
   });
 
-  // ─── CART STATE MANAGEMENT ───────────────────────────
-
-  let cart = []; // Array of cart items with full details
+  // ─── CART STATE ──────────────────────────────────────
+  let cart = [];
 
   function generateCartId() {
     return 'cart_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   function addToCart(itemData) {
-    const cartItem = {
-      cartId: generateCartId(),
-      ...itemData
-    };
+    const cartItem = Object.assign({ cartId: generateCartId() }, itemData);
     cart.push(cartItem);
     updateCartUI();
+    triggerCartFlash();
     return cartItem;
   }
 
   function removeFromCart(cartId) {
-    cart = cart.filter(item => item.cartId !== cartId);
+    cart = cart.filter(function(item) { return item.cartId !== cartId; });
     updateCartUI();
   }
 
   function updateCartItem(cartId, updates) {
-    const item = cart.find(i => i.cartId === cartId);
-    if (item) {
-      Object.assign(item, updates);
-      updateCartUI();
-    }
+    const item = cart.find(function(i) { return i.cartId === cartId; });
+    if (item) { Object.assign(item, updates); updateCartUI(); triggerCartFlash(); }
   }
 
   function clearCart() {
@@ -338,26 +226,25 @@
     updateCartUI();
   }
 
-  // ─── PRICE CALCULATION ENGINE ────────────────────────
+  function triggerCartFlash() {
+    const pill = document.getElementById('cart-pill-btn');
+    if (!pill) return;
+    pill.classList.remove('cart-flash');
+    void pill.offsetWidth;
+    pill.classList.add('cart-flash');
+    setTimeout(function() { pill.classList.remove('cart-flash'); }, 600);
+  }
 
+  // ─── PRICE ENGINE ───────────────────────────────────
   function calculateItemPrice(item) {
-    const category = CATALOG[item.categoryKey];
+    var category = CATALOG[item.categoryKey];
     switch (category.pricingType) {
       case PRICING_TYPES.UNIT:
       case PRICING_TYPES.FIXED:
         return (item.price || 0) * (item.quantity || 1);
-      case PRICING_TYPES.WEIGHT: {
-        const kg = (item.weight || 0) / 1000;
-        return Math.round(kg * (item.pricePerKg || category.defaultPricePerKg || 0));
-      }
+      case PRICING_TYPES.WEIGHT:
+        return Math.round((item.weight || 0) / 1000 * (item.pricePerKg || category.defaultPricePerKg || 0));
       case PRICING_TYPES.PORTION:
-        if (item.surDevis) return 0;
-        if (category.portionConfig) {
-          const cfg = category.portionConfig;
-          const portions = item.portions || cfg.min;
-          const extra = Math.max(0, Math.ceil((portions - cfg.min) / cfg.step));
-          return cfg.basePrice + extra * cfg.incrementPrice;
-        }
         return 0;
       default:
         return 0;
@@ -365,22 +252,12 @@
   }
 
   function calculateCartTotals() {
-    let fixedTotal = 0;
-    let devisItems = [];
-
-    cart.forEach(item => {
-      if (item.surDevis) {
-        devisItems.push(item);
-      } else {
-        fixedTotal += calculateItemPrice(item);
-      }
+    var fixedTotal = 0, devisItems = [];
+    cart.forEach(function(item) {
+      if (item.surDevis || item.pricingType === PRICING_TYPES.PORTION) devisItems.push(item);
+      else fixedTotal += calculateItemPrice(item);
     });
-
-    return {
-      fixedTotal,
-      devisItems,
-      itemCount: cart.length
-    };
+    return { fixedTotal: fixedTotal, devisItems: devisItems, itemCount: cart.length };
   }
 
   function formatPrice(price, surDevis) {
@@ -389,502 +266,352 @@
   }
 
   function formatWeight(grams) {
-    if (grams >= 1000) {
-      return (grams / 1000).toFixed(1).replace('.0', '') + " kg";
-    }
+    if (grams >= 1000) return (grams / 1000).toFixed(1).replace('.0', '') + " kg";
     return grams + " g";
   }
 
   // ─── MODAL DOM REFERENCES ──────────────────────────
-
   const modal = document.getElementById('order-modal');
   const modalClose = document.getElementById('modal-close');
   const viewCats = document.getElementById('view-categories');
   const viewProds = document.getElementById('view-products');
   const viewCheck = document.getElementById('view-checkout');
-
   const productListContainer = document.getElementById('product-list-container');
-  const weightProductListContainer = document.getElementById('weight-product-list-container');
-  const portionProductListContainer = document.getElementById('portion-product-list-container');
-
   const activeCategoryTitle = document.getElementById('active-category-title');
   const btnBackCats = document.getElementById('btn-back-categories');
   const btnBackCart = document.getElementById('btn-back-cart');
   const btnNextStep = document.getElementById('btn-next-step');
-
-  const cartExpandBtn = document.getElementById('cart-expand-btn');
+  const cartPillBtn = document.getElementById('cart-pill-btn');
   const cartPreview = document.getElementById('cart-preview');
   const cartItemsList = document.getElementById('cart-items-list');
   const cartCount = document.getElementById('cart-count');
   const cartTotal = document.getElementById('cart-total');
+  const headerCartBadge = document.getElementById('header-cart-badge');
 
-  // Track which category is currently being viewed for re-rendering
   let currentCategoryKey = null;
 
   // ─── VIEW NAVIGATION ────────────────────────────────
-
   function switchView(viewId) {
-    document.querySelectorAll('.modal-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.modal-view').forEach(function(v) { v.classList.remove('active'); });
     document.getElementById(viewId).classList.add('active');
-
-    const isCheckout = viewId === 'view-checkout';
+    var isCheckout = viewId === 'view-checkout';
     btnNextStep.textContent = isCheckout ? "Confirmer la commande" : "Suivant";
-
-    // Reset product list visibility
-    productListContainer.style.display = '';
-    weightProductListContainer.style.display = 'none';
-    portionProductListContainer.style.display = 'none';
   }
 
-  btnBackCats.addEventListener('click', () => switchView('view-categories'));
-  btnBackCart.addEventListener('click', () => {
-    if (currentCategoryKey) {
-      renderCategoryProducts(currentCategoryKey);
-    } else {
-      switchView('view-products');
-    }
+  btnBackCats.addEventListener('click', function() { switchView('view-categories'); });
+  btnBackCart.addEventListener('click', function() {
+    if (currentCategoryKey) renderCategoryProducts(currentCategoryKey);
+    else switchView('view-categories');
   });
 
   // ─── CATEGORY SELECTION ─────────────────────────────
-
-  document.querySelectorAll('.category-cat-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const catKey = btn.getAttribute('data-category');
-      renderCategoryProducts(catKey);
+  document.querySelectorAll('.category-cat-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      renderCategoryProducts(btn.getAttribute('data-category'));
     });
   });
 
   function renderCategoryProducts(catKey) {
-    const category = CATALOG[catKey];
+    var category = CATALOG[catKey];
     currentCategoryKey = catKey;
     activeCategoryTitle.textContent = category.name;
-
-    // Switch view FIRST so that renderer display settings aren't overridden
     switchView('view-products');
 
-    // Route to appropriate renderer based on pricing type
     switch (category.pricingType) {
       case PRICING_TYPES.WEIGHT:
-        renderWeightBasedProducts(catKey);
-        break;
+        renderWeightProducts(catKey); break;
       case PRICING_TYPES.PORTION:
-        renderPortionBasedProducts(catKey);
-        break;
+        renderSpecialProducts(catKey); break;
       default:
-        renderUnitBasedProducts(catKey);
-        break;
+        renderUnitProducts(catKey); break;
     }
   }
 
-  // ─── UNIT PRODUCTS RENDERER (Unit/Fixed) ───────
-
-  function renderUnitBasedProducts(catKey) {
-    const category = CATALOG[catKey];
-    productListContainer.style.display = 'block';
-    weightProductListContainer.style.display = 'none';
-    portionProductListContainer.style.display = 'none';
-    productListContainer.innerHTML = '';
-
+  // ─── UNIT PRODUCTS (card grid) ─────────────────────
+  function renderUnitProducts(catKey) {
+    var category = CATALOG[catKey];
+    var html = '<div class="product-grid">';
     category.items.forEach(function(product) {
-      const existing = cart.find(c => c.id === product.id);
-      const qty = existing ? existing.quantity : 0;
+      var existing = cart.find(function(c) { return c.id === product.id; });
+      var qty = existing ? existing.quantity : 0;
+      var isPlaceholder = product.isPlaceholder;
+      var imgSrc = 'images/products/' + product.id + '.webp';
 
-      const row = document.createElement('div');
-      row.className = 'product-row';
-      row.innerHTML = `
-        <div class="product-info">
-          <strong>${product.name || '—'}</strong>
-          <span>${product.price ? product.price + ' DH' : ''}</span>
-        </div>
-        <div class="product-stepper">
-          <button type="button" class="stepper-dec" data-id="${product.id}" aria-label="Diminuer">−</button>
-          <span class="stepper-count" data-id="${product.id}">${qty}</span>
-          <button type="button" class="stepper-inc" data-id="${product.id}" aria-label="Augmenter">+</button>
-        </div>
-      `;
-      productListContainer.appendChild(row);
+      html += '<div class="product-card' + (isPlaceholder ? ' placeholder-card' : '') + '">';
+      html += '<div class="product-card-img">';
+      html += '<img src="' + imgSrc + '" alt="' + (product.name || '') + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" loading="lazy" />';
+      html += '<span class="product-initial" style="display:none">' + (product.name ? product.name.charAt(0) : '?') + '</span>';
+      html += '</div>';
+      html += '<div class="product-card-body">';
+      html += '<span class="pc-name">' + (product.name || '—') + '</span>';
+      if (product.price) html += '<span class="pc-price">' + product.price + ' DH</span>';
+      if (product.description) html += '<span class="pc-desc">' + product.description + '</span>';
+      html += '<div class="pc-stepper">';
+      html += '<button type="button" class="stepper-dec" data-id="' + product.id + '"' + (isPlaceholder ? ' disabled' : '') + ' aria-label="Diminuer">−</button>';
+      html += '<span class="pc-qty" data-id="' + product.id + '">' + qty + '</span>';
+      html += '<button type="button" class="stepper-inc" data-id="' + product.id + '"' + (isPlaceholder ? ' disabled' : '') + ' aria-label="Augmenter">+</button>';
+      html += '</div></div>';
+      html += '<button type="button" class="product-card-ajouter" data-id="' + product.id + '"' + (isPlaceholder ? ' disabled' : '') + '>Ajouter</button>';
+      html += '</div>';
     });
-
-    attachUnitProductListeners(catKey);
+    html += '</div>';
+    productListContainer.innerHTML = html;
+    attachUnitListeners(catKey);
   }
 
-  function attachUnitProductListeners(catKey) {
-    const category = CATALOG[catKey];
+  function attachUnitListeners(catKey) {
+    var category = CATALOG[catKey];
 
     productListContainer.querySelectorAll('.stepper-inc').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const id = btn.dataset.id;
-        const product = ITEMS_DICT[id];
-        const existing = cart.find(c => c.id === id);
-        if (existing) {
-          updateCartItem(existing.cartId, { quantity: existing.quantity + 1 });
-        } else {
-          addToCart({ id, name: product.name, price: product.price || 0, quantity: 1, categoryKey: catKey, pricingType: category.pricingType });
-        }
-        const countEl = productListContainer.querySelector(`.stepper-count[data-id="${id}"]`);
-        const updated = cart.find(c => c.id === id);
+        var id = btn.dataset.id;
+        var product = ITEMS_DICT[id];
+        if (!product || product.isPlaceholder) return;
+        var existing = cart.find(function(c) { return c.id === id; });
+        if (existing) updateCartItem(existing.cartId, { quantity: existing.quantity + 1 });
+        else addToCart({ id: id, name: product.name, price: product.price || 0, quantity: 1, categoryKey: catKey, pricingType: category.pricingType });
+        var updated = cart.find(function(c) { return c.id === id; });
+        var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
         if (countEl && updated) countEl.textContent = updated.quantity;
       });
     });
 
     productListContainer.querySelectorAll('.stepper-dec').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const id = btn.dataset.id;
-        const existing = cart.find(c => c.id === id);
+        var id = btn.dataset.id;
+        var existing = cart.find(function(c) { return c.id === id; });
         if (!existing) return;
         if (existing.quantity <= 1) {
           removeFromCart(existing.cartId);
-          const countEl = productListContainer.querySelector(`.stepper-count[data-id="${id}"]`);
+          var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
           if (countEl) countEl.textContent = 0;
         } else {
           updateCartItem(existing.cartId, { quantity: existing.quantity - 1 });
-          const countEl = productListContainer.querySelector(`.stepper-count[data-id="${id}"]`);
-          const updated = cart.find(c => c.id === id);
-          if (countEl && updated) countEl.textContent = updated.quantity;
+          var updated = cart.find(function(c) { return c.id === id; });
+          var countEl2 = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
+          if (countEl2 && updated) countEl2.textContent = updated.quantity;
         }
+      });
+    });
+
+    productListContainer.querySelectorAll('.product-card-ajouter').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.dataset.id;
+        var product = ITEMS_DICT[id];
+        if (!product || product.isPlaceholder) return;
+        var existing = cart.find(function(c) { return c.id === id; });
+        if (existing) updateCartItem(existing.cartId, { quantity: existing.quantity + 1 });
+        else addToCart({ id: id, name: product.name, price: product.price || 0, quantity: 1, categoryKey: catKey, pricingType: category.pricingType });
+        var updated = cart.find(function(c) { return c.id === id; });
+        var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
+        if (countEl && updated) countEl.textContent = updated.quantity;
+        btn.classList.add('added');
+        btn.textContent = '✓ Ajouté';
+        setTimeout(function() { btn.classList.remove('added'); btn.textContent = 'Ajouter'; }, 800);
       });
     });
   }
 
-  // ─── WEIGHT-BASED PRODUCTS RENDERER ────────────────
-
-  function renderWeightBasedProducts(catKey) {
-    const category = CATALOG[catKey];
-    productListContainer.style.display = 'none';
-    weightProductListContainer.style.display = 'block';
-    portionProductListContainer.style.display = 'none';
-    weightProductListContainer.innerHTML = '';
-
+  // ─── WEIGHT PRODUCTS (pill selector) ───────────────
+  function renderWeightProducts(catKey) {
+    var category = CATALOG[catKey];
+    var html = '';
     category.items.forEach(function(product) {
-      const existing = cart.find(c => c.id === product.id);
-      const selWeight  = existing ? existing.weight : null;
-      const pricePerKg = product.pricePerKg || category.defaultPricePerKg;
+      var existing = cart.find(function(c) { return c.id === product.id; });
+      var selWeight = existing ? existing.weight : null;
+      var pricePerKg = product.pricePerKg || category.defaultPricePerKg;
+      var isPlaceholder = product.isPlaceholder;
+      var imgSrc = 'images/products/' + product.id + '.webp';
 
-      const stopIdx = selWeight !== null ? WEIGHT_STOPS_G.indexOf(selWeight) : -1;
-      const isCustom  = selWeight !== null && stopIdx === -1;
-      const sliderVal = isCustom ? WEIGHT_STOPS_G.length : (stopIdx >= 0 ? stopIdx : 0);
-      const hasSelection = selWeight !== null;
+      html += '<div class="weight-product-card' + (isPlaceholder ? ' placeholder-card' : '') + '">';
+      html += '<div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:0.8rem">';
+      html += '<div style="width:80px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--cream)">';
+      html += '<img src="' + imgSrc + '" alt="' + (product.name || '') + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'" loading="lazy" />';
+      html += '</div>';
+      html += '<div class="weight-product-header" style="margin-bottom:0">';
+      html += '<strong>' + (product.name || '—') + '</strong>';
+      if (product.description) html += '<span class="wp-desc">' + product.description + '</span>';
+      html += '<span class="price-per-kg">' + pricePerKg + ' DH / kg</span>';
+      html += '</div></div>';
 
-      const card = document.createElement('div');
-      card.className = 'weight-product-card';
-      card.innerHTML = `
-        <div class="weight-product-header">
-          <strong>${product.name || '—'}</strong>
-          ${product.description ? `<span class="wp-desc">${product.description}</span>` : ''}
-          <span class="price-per-kg">${pricePerKg} DH / kg</span>
-        </div>
+      if (!isPlaceholder) {
+        html += '<div class="weight-pill-row" data-id="' + product.id + '">';
+        WEIGHT_LABELS.forEach(function(label, i) {
+          var isActive = false;
+          if (i < WEIGHT_STOPS_G.length && selWeight === WEIGHT_STOPS_G[i]) isActive = true;
+          if (i === WEIGHT_STOPS_G.length && selWeight && !WEIGHT_STOPS_G.includes(selWeight)) isActive = true;
+          var grams = i < WEIGHT_STOPS_G.length ? WEIGHT_STOPS_G[i] : 'custom';
+          html += '<button type="button" class="weight-pill' + (isActive ? ' active' : '') + '" data-grams="' + grams + '" data-product="' + product.id + '">' + label + '</button>';
+        });
+        html += '</div>';
 
-        <div class="ws-wrap">
-          <div class="ws-labels" aria-hidden="true">
-            ${WEIGHT_LABELS.map((l, i) => `<span class="${i === sliderVal ? 'ws-label-active' : ''}">${l}</span>`).join('')}
-          </div>
-          <div class="ws-track-wrap">
-            <input type="range" class="ws-slider"
-              min="0" max="${WEIGHT_STOPS_G.length}" step="1"
-              value="${sliderVal}"
-              data-id="${product.id}" data-cat="${catKey}"
-              aria-label="Quantité de ${product.name || 'produit'}">
-            <div class="ws-dots" aria-hidden="true">
-              ${WEIGHT_LABELS.map((_, i) => `<span class="ws-dot${i === WEIGHT_STOPS_G.length ? ' ws-dot-custom' : ''}${i === sliderVal ? ' ws-dot-on' : ''}"></span>`).join('')}
-            </div>
-          </div>
-        </div>
+        var isCustomOpen = selWeight && !WEIGHT_STOPS_G.includes(selWeight);
+        html += '<div class="ws-custom-wrap' + (isCustomOpen ? ' open' : '') + '" id="wsc-' + product.id + '">';
+        html += '<input type="number" placeholder="Poids en grammes" min="100" step="50" value="' + (isCustomOpen ? selWeight : '') + '" data-id="' + product.id + '" />';
+        html += '<span>g</span></div>';
 
-        <div class="ws-custom${isCustom ? ' ws-custom-open' : ''}" id="wsc-${product.id}">
-          <input type="number" class="ws-custom-input"
-            placeholder="Poids en grammes…"
-            min="100" max="10000" step="50"
-            value="${isCustom ? selWeight : ''}"
-            data-id="${product.id}"
-            aria-label="Poids personnalisé en grammes">
-          <span class="ws-custom-unit">g</span>
-        </div>
+        html += '<div id="wsp-' + product.id + '">';
+        if (selWeight) {
+          html += '<div class="weight-price-preview"><span>' + formatWeight(selWeight) + '</span><span>→</span><span class="wpp-price">' + Math.round(selWeight / 1000 * pricePerKg) + ' DH</span></div>';
+        }
+        html += '</div>';
 
-        <div class="ws-preview" id="wsp-${product.id}">
-          ${hasSelection
-            ? `<span class="ws-qty">${formatWeight(selWeight)}</span><span class="ws-arrow">→</span><span class="ws-price">${Math.round(selWeight / 1000 * pricePerKg)} DH</span>`
-            : `<span class="ws-hint">Déplacez le curseur pour voir le prix</span>`}
-        </div>
-
-        ${existing ? `<div class="weight-actions"><button type="button" class="btn-remove-weight" data-id="${product.id}">Retirer du panier</button></div>` : ''}
-      `;
-
-      weightProductListContainer.appendChild(card);
+        html += '<button type="button" class="weight-card-ajouter" data-id="' + product.id + '">' + (existing ? '✓ Dans le panier' : 'Ajouter') + '</button>';
+      }
+      html += '</div>';
     });
-
-    attachWeightSliderListeners(catKey);
+    productListContainer.innerHTML = html;
+    attachWeightListeners(catKey);
   }
 
-  function attachWeightSliderListeners(catKey) {
-    const category = CATALOG[catKey];
+  function attachWeightListeners(catKey) {
+    var category = CATALOG[catKey];
 
-    weightProductListContainer.querySelectorAll('.ws-slider').forEach(function(slider) {
-      const id         = slider.dataset.id;
-      const product    = ITEMS_DICT[id];
-      const pricePerKg = product.pricePerKg || category.defaultPricePerKg;
-      const card       = slider.closest('.weight-product-card');
-      const customDiv  = document.getElementById('wsc-' + id);
-      const preview    = document.getElementById('wsp-' + id);
-      const labels     = card.querySelectorAll('.ws-labels span');
-      const dots       = card.querySelectorAll('.ws-dot');
+    productListContainer.querySelectorAll('.weight-pill').forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        var id = pill.dataset.product;
+        var grams = pill.dataset.grams;
+        var product = ITEMS_DICT[id];
+        var pricePerKg = product.pricePerKg || category.defaultPricePerKg;
+        var row = pill.closest('.weight-pill-row');
+        var customDiv = document.getElementById('wsc-' + id);
+        var preview = document.getElementById('wsp-' + id);
 
-      function setPreview(grams) {
-        preview.innerHTML = `<span class="ws-qty">${formatWeight(grams)}</span><span class="ws-arrow">→</span><span class="ws-price">${Math.round(grams / 1000 * pricePerKg)} DH</span>`;
-      }
+        row.querySelectorAll('.weight-pill').forEach(function(p) { p.classList.remove('active'); });
+        pill.classList.add('active');
 
-      function syncCart(grams) {
-        const ex = cart.find(c => c.id === id);
-        if (ex) {
-          updateCartItem(ex.cartId, { weight: grams });
-        } else {
-          addToCart({ id, name: product.name, weight: grams, pricePerKg, categoryKey: catKey, pricingType: PRICING_TYPES.WEIGHT });
-        }
-      }
-
-      slider.addEventListener('input', function() {
-        const val      = parseInt(slider.value);
-        const isCustom = val === WEIGHT_STOPS_G.length;
-
-        labels.forEach((l, i) => l.classList.toggle('ws-label-active', i === val));
-        dots.forEach((d, i)   => d.classList.toggle('ws-dot-on', i === val));
-        customDiv.classList.toggle('ws-custom-open', isCustom);
-
-        if (isCustom) {
-          preview.innerHTML = '<span class="ws-hint">Entrez un poids ci-dessous</span>';
+        if (grams === 'custom') {
+          customDiv.classList.add('open');
+          preview.innerHTML = '';
           setTimeout(function() { customDiv.querySelector('input').focus(); }, 60);
         } else {
-          const grams = WEIGHT_STOPS_G[val];
-          setPreview(grams);
-          syncCart(grams);
+          customDiv.classList.remove('open');
+          var g = parseInt(grams);
+          preview.innerHTML = '<div class="weight-price-preview"><span>' + formatWeight(g) + '</span><span>→</span><span class="wpp-price">' + Math.round(g / 1000 * pricePerKg) + ' DH</span></div>';
+          syncWeightCart(id, g, pricePerKg, catKey);
         }
       });
+    });
 
-      customDiv.querySelector('input').addEventListener('input', function(e) {
-        const grams = parseInt(e.target.value);
-        if (!grams || grams < 100) {
-          preview.innerHTML = '<span class="ws-hint">Poids minimum : 100g</span>';
+    productListContainer.querySelectorAll('.ws-custom-wrap input').forEach(function(input) {
+      input.addEventListener('input', function() {
+        var id = input.dataset.id;
+        var product = ITEMS_DICT[id];
+        var pricePerKg = product.pricePerKg || category.defaultPricePerKg;
+        var g = parseInt(input.value);
+        var preview = document.getElementById('wsp-' + id);
+        if (!g || g < 100) { preview.innerHTML = ''; return; }
+        preview.innerHTML = '<div class="weight-price-preview"><span>' + formatWeight(g) + '</span><span>→</span><span class="wpp-price">' + Math.round(g / 1000 * pricePerKg) + ' DH</span></div>';
+        syncWeightCart(id, g, pricePerKg, catKey);
+      });
+    });
+
+    productListContainer.querySelectorAll('.weight-card-ajouter').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.dataset.id;
+        var existing = cart.find(function(c) { return c.id === id; });
+        if (!existing) {
+          var orig = btn.textContent;
+          btn.textContent = 'Choisissez un poids';
+          btn.style.background = 'var(--muted)';
+          setTimeout(function() { btn.textContent = orig; btn.style.background = ''; }, 1200);
           return;
         }
-        setPreview(grams);
-        syncCart(grams);
-      });
-    });
-
-    weightProductListContainer.querySelectorAll('.btn-remove-weight').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const ex = cart.find(c => c.id === btn.dataset.id);
-        if (ex) { removeFromCart(ex.cartId); renderWeightBasedProducts(catKey); }
+        btn.classList.add('added');
+        btn.textContent = '✓ Ajouté';
+        setTimeout(function() { btn.classList.remove('added'); btn.textContent = '✓ Dans le panier'; }, 800);
       });
     });
   }
 
-  // ─── SPECIAL ITEMS RENDERER ──────────────────────────
-
-  function renderPortionBasedProducts(catKey) {
-    const category = CATALOG[catKey];
-    productListContainer.style.display = 'none';
-    weightProductListContainer.style.display = 'none';
-    portionProductListContainer.style.display = 'block';
-    portionProductListContainer.innerHTML = '';
-
-    category.items.forEach(function(product) {
-      const existing = cart.find(c => c.id === product.id);
-      const card = document.createElement('div');
-      card.className = 'portion-product-card';
-
-      if (product.uiType === 'marriage') {
-        renderMarriageCard(card, product, existing);
-      } else if (product.uiType === 'events') {
-        renderEventsCard(card, product, existing);
-      } else {
-        // Fallback: generic portion UI for any future items
-        card.innerHTML = `
-          <div class="portion-product-header">
-            <strong>${product.name || '—'}</strong>
-            ${product.description ? `<span>${product.description}</span>` : ''}
-          </div>
-          <div class="devis-notice"><span>⚠️ Devis personnalisé — contactez-nous par WhatsApp</span></div>
-        `;
-      }
-
-      portionProductListContainer.appendChild(card);
-    });
-
-    attachSpecialListeners(catKey);
+  function syncWeightCart(id, grams, pricePerKg, catKey) {
+    var existing = cart.find(function(c) { return c.id === id; });
+    if (existing) updateCartItem(existing.cartId, { weight: grams });
+    else addToCart({ id: id, name: ITEMS_DICT[id].name, weight: grams, pricePerKg: pricePerKg, categoryKey: catKey, pricingType: PRICING_TYPES.WEIGHT });
   }
 
-  function renderMarriageCard(card, product, existing) {
-    const savedPersons = existing ? existing.persons : '';
-    card.innerHTML = `
-      <div class="portion-product-header">
-        <strong>${product.name}</strong>
-        ${product.description ? `<span>${product.description}</span>` : ''}
-      </div>
-      <div class="marriage-wrap">
-        <label class="marriage-label" for="mg-${product.id}">Nombre d'invités</label>
-        <div class="marriage-input-row">
-          <input type="number"
-                 id="mg-${product.id}"
-                 class="marriage-guests"
-                 placeholder="Ex : 80"
-                 min="2"
-                 value="${savedPersons}"
-                 data-id="${product.id}"
-                 inputmode="numeric"
-                 aria-label="Nombre d'invités pour le mariage">
-          <span class="marriage-unit">personnes</span>
-        </div>
-      </div>
-      <div class="devis-notice"><span>Devis personnalisé · Confirmation sous 2h par WhatsApp</span></div>
-      ${existing ? `<div class="portion-actions"><button type="button" class="btn-remove-portion" data-id="${product.id}">Retirer</button></div>` : ''}
-    `;
-  }
+  // ─── SPECIAL ORDERS (sub-category architecture) ────
+  var specialSubView = null; // track sub-view state
 
-  function renderEventsCard(card, product, existing) {
-    const savedPersons = existing ? existing.persons : null;
-    const stopIdx  = savedPersons !== null ? EVENT_PERSON_STOPS.indexOf(savedPersons) : -1;
-    const isCustom = savedPersons !== null && stopIdx === -1;
-    const sliderVal = isCustom ? EVENT_PERSON_STOPS.length : (stopIdx >= 0 ? stopIdx : 0);
-    const hasSelection = savedPersons !== null;
+  function renderSpecialProducts(catKey) {
+    var category = CATALOG[catKey];
+    specialSubView = null;
+    var html = '<div class="sub-category-grid">';
+    category.subCategories.forEach(function(sub) {
+      html += '<button type="button" class="sub-category-tile" data-sub="' + sub.key + '">';
+      html += '<span class="sct-emoji">' + sub.emoji + '</span>';
+      html += '<span class="sct-name">' + sub.name + '</span>';
+      html += '<span class="sct-desc">' + sub.desc + '</span>';
+      html += '</button>';
+    });
+    html += '</div>';
+    productListContainer.innerHTML = html;
 
-    card.innerHTML = `
-      <div class="portion-product-header">
-        <strong>${product.name}</strong>
-        ${product.description ? `<span>${product.description}</span>` : ''}
-      </div>
-
-      <div class="ps-wrap">
-        <div class="ps-labels" aria-hidden="true">
-          ${EVENT_PERSON_LABELS.map((l, i) => `<span class="${i === sliderVal ? 'ps-label-active' : ''}">${l}</span>`).join('')}
-        </div>
-        <div class="ps-track-wrap">
-          <input type="range" class="ps-slider"
-            min="0" max="${EVENT_PERSON_STOPS.length}" step="1"
-            value="${sliderVal}"
-            data-id="${product.id}"
-            aria-label="Nombre de personnes">
-          <div class="ps-dots" aria-hidden="true">
-            ${EVENT_PERSON_LABELS.map((_, i) => `<span class="ps-dot${i === EVENT_PERSON_STOPS.length ? ' ps-dot-custom' : ''}${i === sliderVal ? ' ps-dot-on' : ''}"></span>`).join('')}
-          </div>
-        </div>
-      </div>
-
-      <div class="ps-custom${isCustom ? ' ps-custom-open' : ''}" id="psc-${product.id}">
-        <input type="number" class="ps-custom-input"
-          placeholder="Nombre de personnes…"
-          min="31"
-          value="${isCustom ? savedPersons : ''}"
-          data-id="${product.id}"
-          inputmode="numeric"
-          aria-label="Nombre de personnes personnalisé">
-        <span class="ps-custom-unit">personnes</span>
-      </div>
-
-      <div class="ps-preview" id="psp-${product.id}">
-        ${hasSelection
-          ? `<span class="ps-persons">${savedPersons} personnes</span><span class="ps-devis-tag">Sur devis</span>`
-          : `<span class="ps-hint">Sélectionnez le nombre d'invités</span>`}
-      </div>
-      <div class="devis-notice"><span>Tarif selon le type de gâteau · Devis sous 2h</span></div>
-
-      ${existing ? `<div class="portion-actions"><button type="button" class="btn-remove-portion" data-id="${product.id}">Retirer</button></div>` : ''}
-    `;
-  }
-
-  function attachSpecialListeners(catKey) {
-    // — Marriage: number input —
-    portionProductListContainer.querySelectorAll('.marriage-guests').forEach(function(input) {
-      const id      = input.dataset.id;
-      const product = ITEMS_DICT[id];
-
-      input.addEventListener('input', function() {
-        const persons = parseInt(input.value);
-        if (!persons || persons < 2) return;
-        const existing = cart.find(c => c.id === id);
-        if (existing) {
-          updateCartItem(existing.cartId, { persons });
-        } else {
-          addToCart({ id, name: product.name, persons, surDevis: true, uiType: 'marriage', categoryKey: catKey, pricingType: PRICING_TYPES.PORTION });
-        }
+    productListContainer.querySelectorAll('.sub-category-tile').forEach(function(tile) {
+      tile.addEventListener('click', function() {
+        var subKey = tile.dataset.sub;
+        renderSpecialOrderCard(catKey, subKey);
       });
     });
+  }
 
-    // — Events: precision slider —
-    portionProductListContainer.querySelectorAll('.ps-slider').forEach(function(slider) {
-      const id       = slider.dataset.id;
-      const product  = ITEMS_DICT[id];
-      const card     = slider.closest('.portion-product-card');
-      const customDiv = document.getElementById('psc-' + id);
-      const preview   = document.getElementById('psp-' + id);
-      const labels    = card.querySelectorAll('.ps-labels span');
-      const dots      = card.querySelectorAll('.ps-dot');
+  function renderSpecialOrderCard(catKey, subKey) {
+    var category = CATALOG[catKey];
+    var sub = category.subCategories.find(function(s) { return s.key === subKey; });
+    specialSubView = subKey;
 
-      function setPreview(persons) {
-        preview.innerHTML = `<span class="ps-persons">${persons} personnes</span><span class="ps-devis-tag">Sur devis</span>`;
-      }
+    var html = '<button type="button" class="btn-back" id="btn-back-sub">← Retour</button>';
+    html += '<div class="special-order-card">';
+    html += '<h4>' + sub.emoji + ' ' + sub.name + '</h4>';
+    html += '<p class="soc-desc">' + sub.desc + '</p>';
+    html += '<label for="soc-persons">Nombre de personnes</label>';
+    html += '<input type="number" id="soc-persons" placeholder="Ex : 50" min="2" inputmode="numeric" /> ';
+    html += '<label for="soc-notes">Notes / précisions</label>';
+    html += '<textarea id="soc-notes" placeholder="Détails, préférences, allergies..."></textarea>';
+    html += '<button type="button" class="soc-wa-btn" id="soc-send">Envoyer sur WhatsApp</button>';
+    html += '<p class="soc-notice">Confirmation et tarif sous 2h par WhatsApp.</p>';
+    html += '</div>';
 
-      function syncCart(persons) {
-        const existing = cart.find(c => c.id === id);
-        if (existing) {
-          updateCartItem(existing.cartId, { persons });
-        } else {
-          addToCart({ id, name: product.name, persons, surDevis: true, uiType: 'events', categoryKey: catKey, pricingType: PRICING_TYPES.PORTION });
-        }
-      }
+    productListContainer.innerHTML = html;
 
-      slider.addEventListener('input', function() {
-        const val      = parseInt(slider.value);
-        const isCustom = val === EVENT_PERSON_STOPS.length;
-
-        labels.forEach((l, i) => l.classList.toggle('ps-label-active', i === val));
-        dots.forEach((d, i)   => d.classList.toggle('ps-dot-on', i === val));
-        customDiv.classList.toggle('ps-custom-open', isCustom);
-
-        if (isCustom) {
-          preview.innerHTML = '<span class="ps-hint">Entrez le nombre ci-dessous</span>';
-          setTimeout(function() { customDiv.querySelector('input').focus(); }, 60);
-        } else {
-          const persons = EVENT_PERSON_STOPS[val];
-          setPreview(persons);
-          syncCart(persons);
-        }
-      });
-
-      customDiv.querySelector('input').addEventListener('input', function(e) {
-        const persons = parseInt(e.target.value);
-        if (!persons || persons < 1) return;
-        setPreview(persons);
-        syncCart(persons);
-      });
+    document.getElementById('btn-back-sub').addEventListener('click', function() {
+      renderSpecialProducts(catKey);
     });
 
-    // — Remove buttons —
-    portionProductListContainer.querySelectorAll('.btn-remove-portion').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const ex = cart.find(c => c.id === btn.dataset.id);
-        if (ex) { removeFromCart(ex.cartId); renderPortionBasedProducts(catKey); }
-      });
+    document.getElementById('soc-send').addEventListener('click', function() {
+      var persons = document.getElementById('soc-persons').value;
+      var notes = document.getElementById('soc-notes').value.trim();
+      var msg = 'Bonjour Lartica 👋\n\nDemande de devis — ' + sub.name + '\n';
+      if (persons) msg += '👥 ' + persons + ' personnes\n';
+      if (notes) msg += '📝 ' + notes + '\n';
+      msg += '\nMerci de me contacter pour discuter les détails.';
+      var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+      window.open(url, '_blank', 'noopener');
     });
   }
 
   // ─── CART UI UPDATES ────────────────────────────────
-
   function updateCartUI() {
-    const totals = calculateCartTotals();
-
-    // Update badge and total
+    var totals = calculateCartTotals();
     cartCount.textContent = totals.itemCount;
 
-    let totalText = formatPrice(totals.fixedTotal);
+    var totalText = formatPrice(totals.fixedTotal);
     if (totals.devisItems.length > 0) {
       totalText = totals.fixedTotal > 0 ? totals.fixedTotal + ' DH + devis' : 'Sur devis';
     }
     cartTotal.textContent = totalText;
-
-    // Enable/disable next button
     btnNextStep.disabled = totals.itemCount === 0;
 
-    // Render cart items list
+    // Header badge
+    if (headerCartBadge) {
+      if (totals.itemCount > 0) {
+        headerCartBadge.textContent = totals.itemCount;
+        headerCartBadge.classList.add('visible');
+      } else {
+        headerCartBadge.classList.remove('visible');
+      }
+    }
+
     renderCartItemsList();
   }
 
@@ -894,101 +621,75 @@
       return;
     }
 
-    // Group by category
-    const grouped = {};
-    cart.forEach(item => {
-      const catName = CATALOG[item.categoryKey].name;
+    var grouped = {};
+    cart.forEach(function(item) {
+      var catName = CATALOG[item.categoryKey].name;
       if (!grouped[catName]) grouped[catName] = [];
       grouped[catName].push(item);
     });
 
-    let html = '';
-    Object.entries(grouped).forEach(([catName, items]) => {
-      html += `<li class="cart-category-header">${catName}</li>`;
-      items.forEach(item => {
-        const price = calculateItemPrice(item);
-        let details = '';
-
+    var html = '';
+    Object.entries(grouped).forEach(function([catName, items]) {
+      html += '<li class="cart-category-header">' + catName + '</li>';
+      items.forEach(function(item) {
+        var price = calculateItemPrice(item);
+        var details = '';
         if (item.pricingType === PRICING_TYPES.WEIGHT) {
-          const w = item.weight || 0;
-          details = ` — ${w >= 1000 ? (w/1000) + ' kg' : w + 'g'}`;
+          var w = item.weight || 0;
+          details = ' — ' + (w >= 1000 ? (w/1000) + ' kg' : w + 'g');
         } else if (item.pricingType === PRICING_TYPES.PORTION) {
-          details = ` — ${item.persons || item.portions} personnes`;
+          details = ' — ' + (item.persons || '') + ' personnes';
         } else if (item.quantity > 1) {
-          details = ` × ${item.quantity}`;
+          details = ' × ' + item.quantity;
         }
-
-        html += `
-          <li class="cart-item">
-            <span class="li-title">${item.name}${details}</span>
-            <span class="li-price">${formatPrice(price, item.surDevis)}</span>
-            <button type="button" class="btn-remove-item" data-cart-id="${item.cartId}" aria-label="Retirer">×</button>
-          </li>
-        `;
+        html += '<li class="cart-item"><span class="li-title">' + item.name + details + '</span>';
+        html += '<span class="li-price">' + formatPrice(price, item.surDevis) + '</span>';
+        html += '<button type="button" class="btn-remove-item" data-cart-id="' + item.cartId + '" aria-label="Retirer">×</button></li>';
       });
     });
 
-    // Add totals
-    const totals = calculateCartTotals();
-    html += `<li class="cart-divider"></li>`;
-    if (totals.fixedTotal > 0) {
-      html += `<li class="cart-subtotal"><span>Total fixe</span><span>${totals.fixedTotal} DH</span></li>`;
-    }
-    if (totals.devisItems.length > 0) {
-      html += `<li class="cart-devis-notice"><span>⚠️ ${totals.devisItems.length} article(s) sur devis</span></li>`;
-    }
+    var totals = calculateCartTotals();
+    html += '<li class="cart-divider"></li>';
+    if (totals.fixedTotal > 0) html += '<li class="cart-subtotal"><span>Total</span><span>' + totals.fixedTotal + ' DH</span></li>';
+    if (totals.devisItems.length > 0) html += '<li class="cart-devis-notice"><span>⚠️ ' + totals.devisItems.length + ' article(s) sur devis</span></li>';
+    html += '<li><button type="button" class="cart-clear-link" id="cart-clear-btn">Vider le panier</button></li>';
 
     cartItemsList.innerHTML = html;
 
-    // Attach remove listeners
-    cartItemsList.querySelectorAll('.btn-remove-item').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const cartId = e.currentTarget.getAttribute('data-cart-id');
-        removeFromCart(cartId);
-        // Re-render current product view if visible
-        if (currentCategoryKey && document.getElementById('view-products').classList.contains('active')) {
-          renderCategoryProducts(currentCategoryKey);
-        }
+    cartItemsList.querySelectorAll('.btn-remove-item').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        removeFromCart(btn.getAttribute('data-cart-id'));
+        if (currentCategoryKey && viewProds.classList.contains('active')) renderCategoryProducts(currentCategoryKey);
       });
+    });
+
+    var clearBtn = document.getElementById('cart-clear-btn');
+    if (clearBtn) clearBtn.addEventListener('click', function() {
+      clearCart();
+      if (currentCategoryKey && viewProds.classList.contains('active')) renderCategoryProducts(currentCategoryKey);
     });
   }
 
-  // Toggle cart expansion
-  cartExpandBtn.addEventListener('click', () => {
+  // Cart pill toggle
+  cartPillBtn.addEventListener('click', function() {
     if (cart.length === 0) return;
-    const isExpanded = cartPreview.classList.toggle('open');
-    cartExpandBtn.setAttribute('aria-expanded', isExpanded);
+    var isExpanded = cartPreview.classList.toggle('open');
+    cartPillBtn.setAttribute('aria-expanded', isExpanded);
   });
 
   // ─── CHECKOUT FLOW ─────────────────────────────────
-
-  btnNextStep.addEventListener('click', () => {
-    if (document.getElementById('view-checkout').classList.contains('active')) {
-      handleCheckoutSubmit();
-    } else {
-      switchView('view-checkout');
-    }
+  btnNextStep.addEventListener('click', function() {
+    if (viewCheck.classList.contains('active')) handleCheckoutSubmit();
+    else switchView('view-checkout');
   });
 
-  // Validation (preserved from original)
   var validators = {
-    'order-name': function(val) {
-      if (!val || val.trim().length < 2) return 'Veuillez entrer votre nom';
-      return '';
-    },
-    'order-phone': function(val) {
-      var cleaned = val.replace(/[\s\-\.]/g, '');
-      if (!cleaned) return 'Veuillez entrer votre numéro';
-      var pattern = /^(\+212|0)(5|6|7)\d{8}$/;
-      if (!pattern.test(cleaned)) return 'Format : 06XXXXXXXX';
-      return '';
-    },
     'order-date': function(val) {
       if (!val) return 'Veuillez choisir une date';
       var selected = new Date(val);
       var today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (selected < today) return 'La date doit être aujourd\'hui ou après';
+      if (selected < today) return "La date doit être aujourd'hui ou après";
       return '';
     }
   };
@@ -997,21 +698,14 @@
     var field = document.getElementById(fieldId);
     var errorEl = document.getElementById(fieldId + '-error');
     if (!field || !validators[fieldId]) return true;
-
     var errorMsg = validators[fieldId](field.value);
     if (errorMsg) {
       field.classList.add('error');
-      if (errorEl) {
-        errorEl.textContent = errorMsg;
-        errorEl.classList.add('visible');
-      }
+      if (errorEl) { errorEl.textContent = errorMsg; errorEl.classList.add('visible'); }
       return false;
     } else {
       field.classList.remove('error');
-      if (errorEl) {
-        errorEl.textContent = '';
-        errorEl.classList.remove('visible');
-      }
+      if (errorEl) { errorEl.textContent = ''; errorEl.classList.remove('visible'); }
       return true;
     }
   }
@@ -1024,137 +718,107 @@
     return allValid;
   }
 
-  // Real-time validation
   Object.keys(validators).forEach(function(fieldId) {
     var field = document.getElementById(fieldId);
     if (field) {
-      field.addEventListener('blur', () => validateField(fieldId));
-      field.addEventListener('input', () => {
-        if (field.classList.contains('error')) validateField(fieldId);
-      });
+      field.addEventListener('blur', function() { validateField(fieldId); });
+      field.addEventListener('input', function() { if (field.classList.contains('error')) validateField(fieldId); });
     }
   });
 
   function handleCheckoutSubmit() {
     if (!validateAllFields()) {
       var firstError = document.querySelector('.error');
-      if (firstError) {
-        firstError.focus();
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (firstError) { firstError.focus(); firstError.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       return;
     }
 
-    // Gather form data
-    const name = document.getElementById('order-name').value.trim();
-    const phone = document.getElementById('order-phone').value.trim();
-    const date = document.getElementById('order-date').value;
-    const notes = document.getElementById('order-notes').value.trim();
+    var date = document.getElementById('order-date').value;
+    var notes = document.getElementById('order-notes').value.trim();
 
-    // Format date
-    let dateFormatted = '';
+    var dateFormatted = '';
     if (date) {
-      dateFormatted = new Date(date).toLocaleDateString('fr-FR', {
-        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-      });
+      dateFormatted = new Date(date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    // Build WhatsApp message
-    let msg = 'Bonjour Lartica Bakehouse 👋\n\n';
-    msg += '📋 *Nouvelle Commande*\n';
+    var msg = 'Bonjour Lartica 👋 — Voici ma commande :\n\n';
     msg += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-    msg += `👤 *Nom:* ${name}\n`;
-    msg += `📞 *Téléphone:* ${phone}\n`;
-    if (dateFormatted) msg += `📅 *Date de retrait:* ${dateFormatted}\n`;
-    if (notes) msg += `📝 *Notes:* ${notes}\n`;
+    if (dateFormatted) msg += '📅 *Date de retrait:* ' + dateFormatted + '\n';
+    if (notes) msg += '📝 *Notes:* ' + notes + '\n';
+    msg += '\n📦 *DÉTAIL DES ARTICLES*\n\n';
 
-    msg += '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-    msg += '📦 *DÉTAIL DES ARTICLES*\n\n';
-
-    // Group by category for clarity
-    const grouped = {};
-    cart.forEach(item => {
-      const catName = CATALOG[item.categoryKey].name;
+    var grouped = {};
+    cart.forEach(function(item) {
+      var catName = CATALOG[item.categoryKey].name;
       if (!grouped[catName]) grouped[catName] = [];
       grouped[catName].push(item);
     });
 
-    let fixedTotal = 0;
-
-    Object.entries(grouped).forEach(([catName, items]) => {
-      msg += `*${catName.toUpperCase()}*\n`;
-
-      items.forEach(item => {
-        const price = calculateItemPrice(item);
-
+    var fixedTotal = 0;
+    Object.entries(grouped).forEach(function([catName, items]) {
+      msg += '*' + catName.toUpperCase() + '*\n';
+      items.forEach(function(item) {
+        var price = calculateItemPrice(item);
         if (item.pricingType === PRICING_TYPES.WEIGHT) {
-          const pricePerKg = item.pricePerKg || CATALOG[item.categoryKey].defaultPricePerKg;
-          const w = item.weight || 0;
-          const wStr = w >= 1000 ? (w/1000) + ' kg' : w + 'g';
-          // Check if custom (not in precision stops)
-          const isCustom = !WEIGHT_STOPS_G.includes(w);
-
-          msg += `• ${item.name}\n`;
-          if (isCustom) {
-            msg += `  └ ⚖️ Sur mesure : ${wStr} @ ${pricePerKg} DH/kg = ${price} DH\n`;
-          } else {
-            msg += `  └ ${wStr} @ ${pricePerKg} DH/kg = ${price} DH\n`;
-          }
+          var pricePerKg = item.pricePerKg || CATALOG[item.categoryKey].defaultPricePerKg;
+          var w = item.weight || 0;
+          var wStr = w >= 1000 ? (w/1000) + ' kg' : w + 'g';
+          msg += '• ' + item.name + '\n  └ ' + wStr + ' @ ' + pricePerKg + ' DH/kg = ' + price + ' DH\n';
           fixedTotal += price;
-
         } else if (item.pricingType === PRICING_TYPES.PORTION) {
-          msg += `• ${item.name}\n`;
-          msg += `  └ 👥 ${item.persons || item.portions} personnes · SUR DEVIS\n`;
+          msg += '• ' + item.name + '\n  └ 👥 ' + (item.persons || '') + ' personnes · SUR DEVIS\n';
         } else {
-          // Unit/Fixed
-          const lineTotal = price;
-          msg += `• ${item.name}`;
-          if (item.quantity > 1) msg += ` × ${item.quantity}`;
-          msg += ` = ${lineTotal} DH\n`;
-          fixedTotal += lineTotal;
+          msg += '• ' + item.name;
+          if (item.quantity > 1) msg += ' × ' + item.quantity;
+          msg += ' = ' + price + ' DH\n';
+          fixedTotal += price;
         }
       });
-
       msg += '\n';
     });
 
     msg += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+    var totals = calculateCartTotals();
+    if (totals.fixedTotal > 0) msg += '💰 *Total:* ' + totals.fixedTotal + ' DH\n';
+    if (totals.devisItems.length > 0) msg += '⚠️ *Articles sur devis:* ' + totals.devisItems.length + '\n';
+    msg += '\nMerci de confirmer la disponibilité ! 🙏';
 
-    // Totals
-    const totals = calculateCartTotals();
-    if (totals.fixedTotal > 0) {
-      msg += `💰 *Total articles:* ${totals.fixedTotal} DH\n`;
-    }
-    if (totals.devisItems.length > 0) {
-      msg += `⚠️ *Articles sur devis:* ${totals.devisItems.length}\n`;
-      totals.devisItems.forEach(item => {
-        msg += `   - ${item.name} (${item.persons || item.portions} personnes)\n`;
-      });
-    }
-
-    msg += '\nMerci de confirmer la disponibilité ! 🙏\n';
-    msg += 'À très bientôt chez Lartica Bakehouse ✨';
-
-    // Open WhatsApp
-    const waUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+    var waUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
     window.open(waUrl, '_blank', 'noopener');
+
+    // Success: close modal after 400ms, clear cart, show toast
+    setTimeout(function() {
+      closeModal();
+      clearCart();
+      showToast('✓ Commande envoyée sur WhatsApp');
+    }, 400);
   }
 
-  // ─── MODAL OPEN/CLOSE (PRESERVED + ENHANCED) ───────
+  function showToast(message) {
+    var toast = document.createElement('div');
+    toast.className = 'order-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.classList.add('fade-out'); }, 2500);
+    setTimeout(function() { toast.remove(); }, 3000);
+  }
 
+  // ─── MODAL OPEN/CLOSE ──────────────────────────────
   function openModal(productHint) {
     if (!modal) return;
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
-
-    // Reset to categories view
     switchView('view-categories');
 
-    // Auto-route if hint provided
-    if (productHint) {
-      const hint = productHint.toLowerCase();
-      let matchedCat = null;
+    // If cart has items and opened from header cart btn with items, go to checkout
+    if (productHint === '__cart_checkout__' && cart.length > 0) {
+      switchView('view-checkout');
+      return;
+    }
 
+    if (productHint && productHint !== '__cart_checkout__') {
+      var hint = productHint.toLowerCase();
+      var matchedCat = null;
       if (hint.includes('tradition')) matchedCat = 'viennoiseries-trad';
       else if (hint.includes('moderne')) matchedCat = 'viennoiseries-modernes';
       else if (hint.includes('croissant') || hint.includes('pain')) matchedCat = 'viennoiseries-trad';
@@ -1165,7 +829,7 @@
       else if (hint.includes('mariage') || hint.includes('special') || hint.includes('evenement') || hint.includes('événement')) matchedCat = 'special';
 
       if (matchedCat && CATALOG[matchedCat]) {
-        setTimeout(() => renderCategoryProducts(matchedCat), 100);
+        setTimeout(function() { renderCategoryProducts(matchedCat); }, 100);
       }
     }
   }
@@ -1177,109 +841,114 @@
   }
 
   if (modalClose) modalClose.addEventListener('click', closeModal);
-  if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
-      closeModal();
-    }
+  if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal && modal.classList.contains('open')) closeModal();
   });
 
-  // Attach to all order buttons
+  // Header cart btn special behavior
+  var headerCartBtn = document.getElementById('header-cart-btn');
+  if (headerCartBtn) {
+    headerCartBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (cart.length > 0) openModal('__cart_checkout__');
+      else openModal('');
+    });
+  }
+
+  // All other order buttons
   document.querySelectorAll('[data-open-order]').forEach(function(btn) {
+    if (btn.id === 'header-cart-btn') return;
     btn.addEventListener('click', function(e) {
       e.preventDefault();
-      var product = this.getAttribute('data-product') || '';
-      openModal(product);
+      openModal(this.getAttribute('data-product') || '');
     });
   });
 
-  // Set minimum date to today
-  const dateInput = document.getElementById('order-date');
+  // Set min date
+  var dateInput = document.getElementById('order-date');
   if (dateInput) {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    dateInput.setAttribute('min', yyyy + '-' + mm + '-' + dd);
+    var today = new Date();
+    dateInput.setAttribute('min', today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0'));
   }
 
-  // Prevent form default submit
-  document.getElementById('order-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    handleCheckoutSubmit();
-  });
+  var orderForm = document.getElementById('order-form');
+  if (orderForm) orderForm.addEventListener('submit', function(e) { e.preventDefault(); handleCheckoutSubmit(); });
 
-  // Expose globally for debugging
-  window.openOrderModal = openModal;
-  window.getCart = () => cart;
-  window.clearCart = clearCart;
-
-  // ─── ANTIGRAVITY HERO PARALLAX ─────────────────────────
+  // ─── ANTIGRAVITY HERO PARALLAX (gated by IntersectionObserver) ──
   function initAntigravity() {
-    const heroDom = document.querySelector('.hero-images');
+    var heroDom = document.querySelector('.hero-images');
     if (!heroDom) return;
 
-    const main = heroDom.querySelector('.hero-main');
-    const tall = heroDom.querySelector('.hero-tall');
-    const side = heroDom.querySelector('.hero-side');
+    var main = heroDom.querySelector('.hero-main');
+    var tall = heroDom.querySelector('.hero-tall');
+    var side = heroDom.querySelector('.hero-side');
     if (!main || !tall || !side) return;
 
-    // Ambient floating state variables
-    let tick = 0;
-    
-    // Performance optimized scroll loop
-    let lastScrollY = window.scrollY;
-    let ticking = false;
+    var tick = 0;
+    var lastScrollY = window.scrollY;
+    var rafId = null;
+    var heroObserver = null;
 
     function renderParallax() {
-      tick += 0.05; // Ambient time
+      tick += 0.05;
+      var sy = Math.min(lastScrollY, 800);
+      var zMain = 10 + (sy * 0.15);
+      var zTall = 5 + (sy * 0.1);
+      var zSide = 15 + (sy * 0.2);
+      var fMain = Math.sin(tick) * 8;
+      var fTall = Math.cos(tick * 0.8) * 12;
+      var fSide = Math.sin(tick * 1.2) * 6;
+      var rX = sy * 0.02;
 
-      // Calculates how far down the page we've scrolled
-      // If we scroll past hero (say 800px), limit calculation to avoid pointless math
-      const sy = Math.min(lastScrollY, 800);
+      main.style.transform = 'translate3d(0, ' + (fMain - sy * 0.1) + 'px, ' + zMain + 'px) rotateX(' + rX + 'deg) rotateY(-2deg)';
+      tall.style.transform = 'translate3d(0, ' + (fTall - sy * 0.05) + 'px, ' + zTall + 'px) rotateX(' + (-rX) + 'deg) rotateY(3deg)';
+      side.style.transform = 'translate3d(0, ' + (fSide - sy * 0.15) + 'px, ' + zSide + 'px) rotateX(' + (rX * 1.5) + 'deg) rotateY(-1deg)';
 
-      // Core parameters:
-      // Translate Z and diffuses shadow based on scroll
-      const zMain = 10 + (sy * 0.15); // Pops up
-      const zTall = 5 + (sy * 0.1); 
-      const zSide = 15 + (sy * 0.2); // Pops up the most
+      var diffMain = 25 + (sy * 0.1);
+      var diffTall = 20 + (sy * 0.05);
+      var diffSide = 30 + (sy * 0.15);
+      main.style.boxShadow = '0 ' + (15 + sy * 0.05) + 'px ' + diffMain + 'px rgba(181,84,26,' + (0.25 - sy * 0.0002) + ')';
+      tall.style.boxShadow = '0 ' + (10 + sy * 0.05) + 'px ' + diffTall + 'px rgba(181,84,26,' + (0.25 - sy * 0.0002) + ')';
+      side.style.boxShadow = '0 ' + (20 + sy * 0.05) + 'px ' + diffSide + 'px rgba(181,84,26,' + (0.25 - sy * 0.0002) + ')';
 
-      // Ambient floats
-      const fMain = Math.sin(tick) * 8;
-      const fTall = Math.cos(tick * 0.8) * 12;
-      const fSide = Math.sin(tick * 1.2) * 6;
-
-      // Rotations on scroll (parallax tilting)
-      const rX = sy * 0.02;
-      
-      // Apply transforms
-      main.style.transform = `translate3d(0, ${fMain - sy * 0.1}px, ${zMain}px) rotateX(${rX}deg) rotateY(-2deg)`;
-      tall.style.transform = `translate3d(0, ${fTall - sy * 0.05}px, ${zTall}px) rotateX(${-rX}deg) rotateY(3deg)`;
-      side.style.transform = `translate3d(0, ${fSide - sy * 0.15}px, ${zSide}px) rotateX(${rX * 1.5}deg) rotateY(-1deg)`;
-
-      // Dynamic shadow diffusion
-      const diffMain = 25 + (sy * 0.1);
-      const diffTall = 20 + (sy * 0.05);
-      const diffSide = 30 + (sy * 0.15);
-      
-      main.style.boxShadow = `0 ${15 + (sy * 0.05)}px ${diffMain}px rgba(181, 84, 26, ${0.25 - (sy * 0.0002)})`;
-      tall.style.boxShadow = `0 ${10 + (sy * 0.05)}px ${diffTall}px rgba(181, 84, 26, ${0.25 - (sy * 0.0002)})`;
-      side.style.boxShadow = `0 ${20 + (sy * 0.05)}px ${diffSide}px rgba(181, 84, 26, ${0.25 - (sy * 0.0002)})`;
-
-      ticking = false;
-      requestAnimationFrame(renderParallax);
+      rafId = requestAnimationFrame(renderParallax);
     }
 
-    // Start loop
-    requestAnimationFrame(renderParallax);
+    function startLoop() {
+      if (rafId) return;
+      main.style.willChange = 'transform';
+      tall.style.willChange = 'transform';
+      side.style.willChange = 'transform';
+      rafId = requestAnimationFrame(renderParallax);
+    }
 
-    window.addEventListener('scroll', () => {
-      lastScrollY = window.scrollY;
-    }, { passive: true });
+    function stopLoop() {
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      main.style.willChange = 'auto';
+      tall.style.willChange = 'auto';
+      side.style.willChange = 'auto';
+    }
+
+    heroObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) startLoop();
+        else stopLoop();
+      });
+    }, { threshold: 0 });
+
+    heroObserver.observe(heroDom);
+
+    window.addEventListener('scroll', function() { lastScrollY = window.scrollY; }, { passive: true });
   }
 
-  // Small timeout to let entry animations finish before injecting persistent JS transforms
   setTimeout(initAntigravity, 1000);
 
+  // Expose for debugging
+  window.openOrderModal = openModal;
+  window.getCart = function() { return cart; };
+  window.clearCart = clearCart;
+
 })();
+

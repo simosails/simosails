@@ -73,7 +73,6 @@
 
   <a class="skip-nav" href="#main-content">Aller au contenu</a>
 
-
   <!-- ─── HEADER ─────────────────────────── -->
   <header id="site-header">
     <nav aria-label="Navigation principale">
@@ -88,6 +87,10 @@
         <li><a href="#livraison">Livraison</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
+      <button type="button" id="header-cart-btn" data-open-order aria-label="Panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span id="header-cart-badge">0</span>
+      </button>
       <button class="btn-wa" data-open-order aria-label="Passer commande">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
         Passer commande
@@ -119,7 +122,6 @@
             <span class="pulse" aria-hidden="true"></span>
             Four allumé à 4h ce matin · Fraîcheur garantie
           </div>
-
           <h1>Croissants feuilletés<br><em>à 7h du matin</em><br>à Fès.</h1>
           <p class="hero-sub">Pâtisserie franco-marocaine à Fès : viennoiseries au beurre AOP Charentes-Poitou, classiques marocains retravaillés, et gâteaux sur mesure pour vos événements. Livraison disponible Ville Nouvelle &amp; Médina.</p>
           <div class="hero-ctas">
@@ -137,21 +139,20 @@
           <img class="hero-main" src="images/hero-main.webp"
                srcset="images/hero-main-1200.webp 1200w, images/hero-main-600.webp 600w"
                sizes="(max-width: 768px) 100vw, 60vw"
-               alt="Viennoiseries fraîches Lartica : croissants, pains au chocolat et escargots"
-               width="912" height="640" loading="eager" fetchpriority="high" />
+               alt="Viennoiseries fraîches Lartica" width="912" height="640" loading="eager" fetchpriority="high" />
           <img class="hero-tall" src="images/hero-tall.webp"
                srcset="images/hero-tall.webp 1200w, images/hero-tall.webp 600w"
                sizes="(max-width: 768px) 100vw, 38vw"
-               alt="Naked cake aux fruits rouges préparé en atelier"
-               width="456" height="640" loading="eager" fetchpriority="high" />
+               alt="Naked cake aux fruits rouges" width="456" height="640" loading="eager" fetchpriority="high" />
           <img class="hero-side" src="images/hero-side.webp"
                srcset="images/hero-side.webp 1200w, images/hero-side.webp 600w"
                sizes="(max-width: 768px) 100vw, 28vw"
-               alt="Croissant aux amandes feuilleté, mie alvéolée"
-               width="408" height="476" loading="eager" fetchpriority="high" />
+               alt="Croissant aux amandes feuilleté" width="408" height="476" loading="eager" fetchpriority="high" />
         </div>
       </div>
     </section>
+
+<!-- FILE CONTINUES FROM PART 1 -->
 
     <!-- ─── MENU ─────────────────────────────── -->
     <section id="menu" aria-labelledby="menu-heading">
@@ -161,51 +162,13 @@
           <h2 id="menu-heading">Trois univers,<br><em>une seule maison.</em></h2>
           <p class="section-lead">Tous nos produits sont préparés sur place, sans conservateurs. Production limitée chaque jour — commandez avant 20h pour le lendemain.</p>
         </div>
-
         <div class="menu-categories-grid" aria-label="Commander par catégorie">
-
-          <!-- Viennoiseries Traditionnelles -->
-          <button class="cat-tile" type="button" data-open-order data-product="croissant pain" aria-label="Commander des viennoiseries traditionnelles">
-            <div class="cat-emoji" aria-hidden="true">🥐</div>
-            <span class="cat-tile-name">Viennoiseries<br>Traditionnelles</span>
-            <span class="cat-tile-price">À partir de 6 DH</span>
-          </button>
-
-          <!-- Viennoiseries Modernes -->
-          <button class="cat-tile" type="button" data-open-order data-product="crokies dubai moderne" aria-label="Commander des viennoiseries modernes">
-            <div class="cat-emoji" aria-hidden="true">✨</div>
-            <span class="cat-tile-name">Viennoiseries<br>Modernes</span>
-            <span class="cat-tile-price">À partir de 10 DH</span>
-          </button>
-
-          <!-- Classiques Marocains -->
-          <button class="cat-tile" type="button" data-open-order data-product="kaab ghzal marocain fekkas" aria-label="Commander des classiques marocains">
-            <div class="cat-emoji" aria-hidden="true">🍯</div>
-            <span class="cat-tile-name">Classiques<br>Marocains</span>
-            <span class="cat-tile-price">À partir de 250g</span>
-          </button>
-
-          <!-- Formules & Box -->
-          <button class="cat-tile" type="button" data-open-order data-product="box plateau formule" aria-label="Commander une formule ou box">
-            <div class="cat-emoji" aria-hidden="true">🎁</div>
-            <span class="cat-tile-name">Formules &amp; Box</span>
-            <span class="cat-tile-price">Box et plateaux</span>
-          </button>
-
-          <!-- Cakes & Petites Tartes -->
-          <button class="cat-tile" type="button" data-open-order data-product="cake tarte" aria-label="Commander des cakes et tartes">
-            <div class="cat-emoji" aria-hidden="true">🍰</div>
-            <span class="cat-tile-name">Cakes &amp;<br>Petites Tartes</span>
-            <span class="cat-tile-price">Pâtisseries individuelles</span>
-          </button>
-
-          <!-- Commandes Spéciales -->
-          <button class="cat-tile" type="button" data-open-order data-product="mariage événement special" aria-label="Passer une commande spéciale">
-            <div class="cat-emoji" aria-hidden="true">👑</div>
-            <span class="cat-tile-name">Commandes<br>Spéciales</span>
-            <span class="cat-tile-price">Mariages &amp; événements</span>
-          </button>
-
+          <button class="cat-tile" type="button" data-open-order data-product="croissant pain" aria-label="Commander des viennoiseries traditionnelles"><div class="cat-emoji" aria-hidden="true">🥐</div><span class="cat-tile-name">Viennoiseries<br>Traditionnelles</span><span class="cat-tile-price">À partir de 6 DH</span></button>
+          <button class="cat-tile" type="button" data-open-order data-product="crokies dubai moderne" aria-label="Commander des viennoiseries modernes"><div class="cat-emoji" aria-hidden="true">✨</div><span class="cat-tile-name">Viennoiseries<br>Modernes</span><span class="cat-tile-price">À partir de 10 DH</span></button>
+          <button class="cat-tile" type="button" data-open-order data-product="kaab ghzal marocain fekkas" aria-label="Commander des classiques marocains"><div class="cat-emoji" aria-hidden="true">🍯</div><span class="cat-tile-name">Classiques<br>Marocains</span><span class="cat-tile-price">À partir de 250g</span></button>
+          <button class="cat-tile" type="button" data-open-order data-product="box plateau formule" aria-label="Commander une formule ou box"><div class="cat-emoji" aria-hidden="true">🎁</div><span class="cat-tile-name">Formules &amp; Box</span><span class="cat-tile-price">Box et plateaux</span></button>
+          <button class="cat-tile" type="button" data-open-order data-product="cake tarte" aria-label="Commander des cakes et tartes"><div class="cat-emoji" aria-hidden="true">🍰</div><span class="cat-tile-name">Cakes &amp;<br>Petites Tartes</span><span class="cat-tile-price">Pâtisseries individuelles</span></button>
+          <button class="cat-tile" type="button" data-open-order data-product="mariage événement special" aria-label="Passer une commande spéciale"><div class="cat-emoji" aria-hidden="true">👑</div><span class="cat-tile-name">Commandes<br>Spéciales</span><span class="cat-tile-price">Mariages &amp; événements</span></button>
         </div>
       </div>
     </section>
@@ -223,28 +186,20 @@
             <div class="bundle-icon" aria-hidden="true">🥐</div>
             <h3>Box Petit-Déjeuner</h3>
             <p class="bundle-desc">L'essentiel du matin, en une boîte. Idéal pour la famille ou le bureau.</p>
-            <ul class="bundle-includes">
-              <li>2 croissants nature</li><li>2 pains au chocolat</li><li>1 croissant aux amandes</li><li>1 cinnamon roll</li><li>Emballage cadeau inclus</li>
-            </ul>
+            <ul class="bundle-includes"><li>2 croissants nature</li><li>2 pains au chocolat</li><li>1 croissant aux amandes</li><li>1 cinnamon roll</li><li>Emballage cadeau inclus</li></ul>
             <div class="bundle-price">70 DH <span>au lieu de 84 DH</span></div>
             <button class="bundle-order-btn" data-open-order data-product="Box Petit-Déjeuner (6 pcs)">Commander cette box</button>
           </div>
-
           <div class="bundle-card featured fade-up">
             <span class="bundle-popular">Le + populaire</span>
             <div class="bundle-icon" aria-hidden="true">🎉</div>
             <h3>Plateau Événement</h3>
             <p class="bundle-desc">Impressionnez vos invités avec un assortiment généreux de nos meilleures pièces.</p>
-            <ul class="bundle-includes">
-              <li>15 viennoiseries assorties</li><li>Mix sucré / salé possible</li><li>Boîte cadeau premium</li><li>Livraison incluse (Fès)</li><li>Commande 24h à l'avance</li>
-            </ul>
+            <ul class="bundle-includes"><li>15 viennoiseries assorties</li><li>Mix sucré / salé possible</li><li>Boîte cadeau premium</li><li>Livraison incluse (Fès)</li><li>Commande 24h à l'avance</li></ul>
             <div class="bundle-price">250 DH <span>· livraison offerte</span></div>
             <button class="bundle-order-btn" data-open-order data-product="Plateau Événement (15 pcs)">Commander ce plateau</button>
           </div>
-
-
         </div>
-
         <div class="urgency-strip fade-up">
           <p>⏰ <strong>Production limitée chaque jour</strong> — Commandez avant 20h pour une livraison le lendemain matin</p>
         </div>
@@ -275,10 +230,8 @@
     <section id="histoire" aria-labelledby="story-heading">
       <div class="story-inner">
         <div class="story-image-wrap">
-          <img src="images/story-baker.webp" alt="Plateau signature Lartica Bakehouse : entremets, gâteaux kiwi et tranches garnies" width="800" height="600" loading="lazy" decoding="async" />
-          <div class="story-image-accent" aria-hidden="true">
-            <div class="big">4+</div><div class="small">ans de savoir-faire</div>
-          </div>
+          <img src="images/story-baker.webp" alt="Plateau signature Lartica Bakehouse" width="800" height="600" loading="lazy" decoding="async" />
+          <div class="story-image-accent" aria-hidden="true"><div class="big">4+</div><div class="small">ans de savoir-faire</div></div>
         </div>
         <div class="story-text">
           <p class="section-eyebrow">L'atelier</p>
@@ -316,30 +269,17 @@
         <div class="section-header">
           <p class="section-eyebrow">Avis clients</p>
           <h2 id="testimonials-heading">Ce que disent<br><em>nos clients.</em></h2>
-          <div class="rating-badge fade-up" aria-label="Noté 4.9 sur 5 par 127 clients">
-            <span class="stars" aria-hidden="true">★★★★★</span> <strong>4.9</strong> / 5 <span>(127 avis Google)</span>
-          </div>
+          <div class="rating-badge fade-up" aria-label="Noté 4.9 sur 5 par 127 clients"><span class="stars" aria-hidden="true">★★★★★</span> <strong>4.9</strong> / 5 <span>(127 avis Google)</span></div>
           <p class="section-lead">98% de nos clients nous recommandent. Voici quelques témoignages récents.</p>
         </div>
         <div class="testimonials-grid">
-          <div class="testimonial-card fade-up">
-            <div class="testimonial-stars" aria-label="5 étoiles sur 5">★★★★★</div>
-            <p class="testimonial-text">"Les meilleurs croissants de Fès, sans aucun doute. On sent la qualité du beurre dès la première bouchée. Je commande chaque semaine pour le petit-déjeuner du dimanche."</p>
-            <div class="testimonial-author"><div class="testimonial-avatar">"</div><div class="testimonial-author-info"><strong>Sara M.</strong><span>Cliente régulière · Ville Nouvelle · Mars 2026</span></div></div>
-          </div>
-          <div class="testimonial-card fade-up">
-            <div class="testimonial-stars" aria-label="5 étoiles sur 5">★★★★★</div>
-            <p class="testimonial-text">"Wedding cake absolument magnifique pour notre mariage. L'équipe a respecté notre vision au détail près. Service impeccable et livraison ponctuelle."</p>
-            <div class="testimonial-author"><div class="testimonial-avatar">"</div><div class="testimonial-author-info"><strong>Karim &amp; Nadia</strong><span>Mariage · Décembre 2025</span></div></div>
-          </div>
-          <div class="testimonial-card fade-up">
-            <div class="testimonial-stars" aria-label="5 étoiles sur 5">★★★★★</div>
-            <p class="testimonial-text">"J'ai commandé le plateau événement pour une réunion au bureau. 15 pièces toutes parfaites. Mes collègues en parlent encore ! Rapport qualité-prix imbattable."</p>
-            <div class="testimonial-author"><div class="testimonial-avatar">"</div><div class="testimonial-author-info"><strong>Youssef B.</strong><span>Plateau corporate · Janvier 2026</span></div></div>
-          </div>
+          <div class="testimonial-card fade-up"><div class="testimonial-stars" aria-label="5 étoiles sur 5">★★★★★</div><p class="testimonial-text">"Les meilleurs croissants de Fès, sans aucun doute. On sent la qualité du beurre dès la première bouchée. Je commande chaque semaine pour le petit-déjeuner du dimanche."</p><div class="testimonial-author"><div class="testimonial-avatar">"</div><div class="testimonial-author-info"><strong>Sara M.</strong><span>Cliente régulière · Ville Nouvelle · Mars 2026</span></div></div></div>
+          <div class="testimonial-card fade-up"><div class="testimonial-stars" aria-label="5 étoiles sur 5">★★★★★</div><p class="testimonial-text">"Wedding cake absolument magnifique pour notre mariage. L'équipe a respecté notre vision au détail près. Service impeccable et livraison ponctuelle."</p><div class="testimonial-author"><div class="testimonial-avatar">"</div><div class="testimonial-author-info"><strong>Karim &amp; Nadia</strong><span>Mariage · Décembre 2025</span></div></div></div>
+          <div class="testimonial-card fade-up"><div class="testimonial-stars" aria-label="5 étoiles sur 5">★★★★★</div><p class="testimonial-text">"J'ai commandé le plateau événement pour une réunion au bureau. 15 pièces toutes parfaites. Mes collègues en parlent encore ! Rapport qualité-prix imbattable."</p><div class="testimonial-author"><div class="testimonial-avatar">"</div><div class="testimonial-author-info"><strong>Youssef B.</strong><span>Plateau corporate · Janvier 2026</span></div></div></div>
         </div>
       </div>
     </section>
+
 
     <!-- ─── DELIVERY SECTION ──────────────────── -->
     <section id="livraison" aria-labelledby="delivery-heading">
@@ -363,12 +303,12 @@
           <p class="section-lead">Aperçu de nos créations quotidiennes et sur mesure. Pour voir la disponibilité du jour, consultez notre Instagram.</p>
         </div>
         <div class="gallery-grid" role="list" aria-label="Galerie de produits">
-          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-1.webp" alt="Gâteau artistique deux étages, glaçage texturé noir et blanc avec rose noire en sucre" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Gâteau artistique</span></div></a></figure>
-          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-2.webp" alt="Assortiment de petits gâteaux : dômes chocolat, red velvet, tartelettes mangue" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Plateau pâtissier</span></div></a></figure>
-          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-3.webp" alt="Croissants fourrés pistache et chocolat, vue rapprochée" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Croissants signature</span></div></a></figure>
-          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-4.webp" alt="Assortiment de pretzels enrobés chocolat et barres sésame sur plateau" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Pretzels chocolat</span></div></a></figure>
-          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-5.webp" alt="Ghriba aux noix, biscuits craquelés au sucre glace sur tissu sombre" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Ghriba noix</span></div></a></figure>
-          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-6.webp" alt="Pâtisseries mixtes sur étagère bois : choux fourrés, pain Suisse, éclairs chocolat" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Vitrine du jour</span></div></a></figure>
+          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-1.webp" alt="Gâteau artistique deux étages" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Gâteau artistique</span></div></a><button class="gallery-order-btn" data-open-order data-product="cake tarte">Commander →</button></figure>
+          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-2.webp" alt="Assortiment de petits gâteaux" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Plateau pâtissier</span></div></a><button class="gallery-order-btn" data-open-order data-product="box plateau formule">Commander →</button></figure>
+          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-3.webp" alt="Croissants fourrés pistache et chocolat" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Croissants signature</span></div></a><button class="gallery-order-btn" data-open-order data-product="croissant pain">Commander →</button></figure>
+          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-4.webp" alt="Assortiment de pretzels enrobés chocolat" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Pretzels chocolat</span></div></a><button class="gallery-order-btn" data-open-order data-product="moderne">Commander →</button></figure>
+          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-5.webp" alt="Ghriba aux noix" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Ghriba noix</span></div></a><button class="gallery-order-btn" data-open-order data-product="marocain">Commander →</button></figure>
+          <figure class="gallery-item fade-up" role="listitem"><a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener"><img src="images/gallery-6.webp" alt="Pâtisseries mixtes sur étagère" width="600" height="600" loading="lazy" decoding="async" /><div class="gallery-item-overlay" aria-hidden="true"><span>Vitrine du jour</span></div></a><button class="gallery-order-btn" data-open-order data-product="croissant pain">Commander →</button></figure>
         </div>
         <div class="gallery-cta">
           <a href="https://www.instagram.com/lartica_bakehouse_fes" target="_blank" rel="noopener" class="gallery-instagram-link" aria-label="Voir plus de photos sur Instagram">
@@ -393,10 +333,7 @@
             <div class="contact-row"><div class="contact-icon" aria-hidden="true">🕐</div><div class="contact-row-text"><strong>Horaires d'ouverture</strong><dl class="hours-grid"><dt>Lundi – Samedi</dt><dd>7h00 – 20h00</dd><dt>Dimanche</dt><dd>8h00 – 14h00</dd><dt>Préavis gâteaux</dt><dd>48h minimum</dd></dl></div></div>
           </div>
           <div class="contact-ctas">
-            <button class="btn-wa" data-open-order aria-label="Passer commande">
-              <svg viewBox="0 0 24 24" aria-hidden="true" class="wa-icon-inline"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              Passer commande
-            </button>
+            <button class="btn-wa" data-open-order aria-label="Passer commande"><svg viewBox="0 0 24 24" aria-hidden="true" class="wa-icon-inline"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> Passer commande</button>
             <a href="tel:+212664727887" class="btn-outline" aria-label="Appeler Lartica Bakehouse">Appeler maintenant</a>
           </div>
           <div class="payment-methods"><span>💳</span><span>Paiement : Espèces · Virement pour entreprises</span></div>
@@ -443,7 +380,7 @@
     </div>
   </div>
 
-  <!-- ─── ORDER MODAL (CART) ───────────────────── -->
+  <!-- ─── ORDER MODAL ───────────────────── -->
   <div class="modal-overlay" id="order-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-content side-panel">
       <div class="modal-header">
@@ -451,95 +388,32 @@
         <button class="modal-close" id="modal-close" aria-label="Fermer la commande">✕</button>
       </div>
 
-      <!-- VIEW 1: CATEGORY SELECTION (6 CATEGORIES) -->
+      <!-- VIEW 1: CATEGORY SELECTION -->
       <div class="modal-view active" id="view-categories">
         <p class="modal-subtitle">Que souhaitez-vous commander ?</p>
         <div class="category-grid">
-
-          <!-- Category 1: Viennoiseries Traditionnelles -->
-          <button type="button" class="category-cat-btn" data-category="viennoiseries-trad">
-            <span class="cat-emoji" aria-hidden="true">🥐</span>
-            <span class="cat-name">Viennoiseries Traditionnelles</span>
-            <span class="cat-sub">À partir de 6 DH</span>
-          </button>
-
-          <!-- Category 2: Viennoiseries Modernes -->
-          <button type="button" class="category-cat-btn" data-category="viennoiseries-modernes">
-            <span class="cat-emoji" aria-hidden="true">✨</span>
-            <span class="cat-name">Viennoiseries Modernes</span>
-            <span class="cat-sub">À partir de 10 DH</span>
-          </button>
-
-          <!-- Category 3: Classiques Marocains (WEIGHT-BASED) -->
-          <button type="button" class="category-cat-btn" data-category="marocains">
-            <span class="cat-emoji" aria-hidden="true">🍯</span>
-            <span class="cat-name">Classiques Marocains</span>
-            <span class="cat-sub">À partir de 250g</span>
-          </button>
-
-          <!-- Category 4: Formules & Box -->
-          <button type="button" class="category-cat-btn" data-category="formules">
-            <span class="cat-emoji" aria-hidden="true">🎁</span>
-            <span class="cat-name">Formules &amp; Box</span>
-            <span class="cat-sub">Box et plateaux</span>
-          </button>
-
-          <!-- Category 5: Cakes & Petites Tartes -->
-          <button type="button" class="category-cat-btn" data-category="cakes">
-            <span class="cat-emoji" aria-hidden="true">🍰</span>
-            <span class="cat-name">Cakes &amp; Petites Tartes</span>
-            <span class="cat-sub">Pâtisseries individuelles</span>
-          </button>
-
-          <!-- Category 6: Commandes Spéciales (PORTION-BASED) -->
-          <button type="button" class="category-cat-btn" data-category="special">
-            <span class="cat-emoji" aria-hidden="true">👑</span>
-            <span class="cat-name">Commandes Spéciales</span>
-            <span class="cat-sub">Mariages &amp; événements</span>
-          </button>
-
+          <button type="button" class="category-cat-btn" data-category="viennoiseries-trad"><span class="cat-emoji" aria-hidden="true">🥐</span><span class="cat-name">Viennoiseries Traditionnelles</span><span class="cat-sub">À partir de 6 DH</span></button>
+          <button type="button" class="category-cat-btn" data-category="viennoiseries-modernes"><span class="cat-emoji" aria-hidden="true">✨</span><span class="cat-name">Viennoiseries Modernes</span><span class="cat-sub">À partir de 10 DH</span></button>
+          <button type="button" class="category-cat-btn" data-category="marocains"><span class="cat-emoji" aria-hidden="true">🍯</span><span class="cat-name">Classiques Marocains</span><span class="cat-sub">À partir de 250g</span></button>
+          <button type="button" class="category-cat-btn" data-category="formules"><span class="cat-emoji" aria-hidden="true">🎁</span><span class="cat-name">Formules &amp; Box</span><span class="cat-sub">Box et plateaux</span></button>
+          <button type="button" class="category-cat-btn" data-category="cakes"><span class="cat-emoji" aria-hidden="true">🍰</span><span class="cat-name">Cakes &amp; Petites Tartes</span><span class="cat-sub">Pâtisseries individuelles</span></button>
+          <button type="button" class="category-cat-btn" data-category="special"><span class="cat-emoji" aria-hidden="true">👑</span><span class="cat-name">Commandes Spéciales</span><span class="cat-sub">Mariages &amp; événements</span></button>
         </div>
       </div>
 
-      <!-- VIEW 2: PRODUCT LIST (DYNAMIC BASED ON CATEGORY TYPE) -->
+      <!-- VIEW 2: PRODUCT LIST -->
       <div class="modal-view" id="view-products">
         <button type="button" class="btn-back" id="btn-back-categories" aria-label="Retour aux catégories">← Changer de catégorie</button>
         <h3 class="active-category-title" id="active-category-title">Catégorie</h3>
-
-        <!-- Container for standard products (unit-based) -->
-        <div class="product-list" id="product-list-container">
-          <!-- Populated by JavaScript -->
-        </div>
-
-        <!-- Container for weight-based products (Classiques Marocains) -->
-        <div class="weight-product-list" id="weight-product-list-container" style="display: none;">
-          <!-- Populated by JavaScript -->
-        </div>
-
-        <!-- Container for portion-based products (Commandes Spéciales) -->
-        <div class="portion-product-list" id="portion-product-list-container" style="display: none;">
-          <!-- Populated by JavaScript -->
-        </div>
+        <div id="product-list-container"></div>
       </div>
 
       <!-- VIEW 3: CHECKOUT FORM -->
       <div class="modal-view" id="view-checkout">
         <button type="button" class="btn-back" id="btn-back-cart" aria-label="Retour au panier">← Modifier mon panier</button>
-        <h3 class="active-category-title">Informations de livraison</h3>
+        <h3 class="active-category-title">Finaliser la commande</h3>
         <form id="order-form" novalidate>
           <div class="order-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="order-name">Nom complet <span class="required">*</span></label>
-                <input type="text" id="order-name" name="name" placeholder="Votre nom" required autocomplete="name" />
-                <span class="form-error" id="order-name-error"></span>
-              </div>
-              <div class="form-group">
-                <label for="order-phone">Téléphone <span class="required">*</span></label>
-                <input type="tel" id="order-phone" name="phone" placeholder="06XXXXXXXX" required autocomplete="tel" />
-                <span class="form-error" id="order-phone-error"></span>
-              </div>
-            </div>
             <div class="form-group">
               <label for="order-date">Date de retrait souhaitée <span class="required">*</span></label>
               <input type="date" id="order-date" name="date" required />
@@ -553,26 +427,27 @@
         </form>
       </div>
 
-      <!-- CART SUMMARY STICKY FOOTER -->
+      <!-- CART STICKY FOOTER -->
       <div class="cart-sticky-footer" id="cart-footer">
-        <div class="cart-summary-top">
-          <button type="button" class="cart-expand-btn" id="cart-expand-btn" aria-expanded="false">
-            <span class="cart-badge" id="cart-count">0</span>
-            <span class="cart-total-text">Total : <strong id="cart-total">0 DH</strong></span>
-            <svg class="chevron" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+        <div class="cart-bar-top">
+          <button type="button" id="cart-pill-btn" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            <span class="cart-pill-count" id="cart-count">0</span>
+            <span class="cart-pill-label">article(s)</span>
           </button>
-          <button type="button" class="btn-primary cart-next-btn" id="btn-next-step" disabled>Suivant</button>
+          <div class="cart-bar-right">
+            <span class="cart-bar-total" id="cart-total">0 DH</span>
+            <button type="button" class="btn-primary cart-next-btn" id="btn-next-step" disabled>Suivant</button>
+          </div>
         </div>
         <div class="cart-items-preview" id="cart-preview">
-          <ul id="cart-items-list">
-            <!-- Populated by JavaScript -->
-          </ul>
+          <ul id="cart-items-list"></ul>
         </div>
       </div>
-
     </div>
   </div>
 
   <script src="js/main.js" defer></script>
 </body>
 </html>
+
