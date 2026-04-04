@@ -112,9 +112,11 @@
         { id: "vt-pain-suisse",       name: "Pain Suisse",            price: 7  },
         { id: "vt-pain-brise",        name: "Pain brisé",             price: 6  },
         { id: "vt-chausson-fromage",  name: "Chausson Fromage",       price: 7  },
-        // ── À COMPLÉTER ──────────────────────────────────────
-        // { id: "vt-nom-unique",     name: "Nom du produit",         price: 0  },
-        // { id: "vt-nom-unique-2",   name: "Nom du produit 2",       price: 0  },
+        { id: "vt-item-6",            name: "Nom produit",            price: 0  },
+        { id: "vt-item-7",            name: "Nom produit",            price: 0  },
+        { id: "vt-item-8",            name: "Nom produit",            price: 0  },
+        { id: "vt-item-9",            name: "Nom produit",            price: 0  },
+        { id: "vt-item-10",           name: "Nom produit",            price: 0  },
       ]
     },
 
@@ -130,8 +132,13 @@
         { id: "vm-crokies-brownie",   name: "Crokies Brownie",            price: 15 },
         { id: "vm-croquets-pistache", name: "Croquets Pistache",          price: 15 },
         { id: "vm-croissant-dubai",   name: "Croissant Dubai",            price: 18 },
-        // ── À COMPLÉTER ──────────────────────────────────────
-        // { id: "vm-nom-unique",     name: "Nom du produit",             price: 0  },
+        { id: "vm-item-9",            name: "Nom produit",                price: 0  },
+        { id: "vm-item-10",           name: "Nom produit",                price: 0  },
+        { id: "vm-item-11",           name: "Nom produit",                price: 0  },
+        { id: "vm-item-12",           name: "Nom produit",                price: 0  },
+        { id: "vm-item-13",           name: "Nom produit",                price: 0  },
+        { id: "vm-item-14",           name: "Nom produit",                price: 0  },
+        { id: "vm-item-15",           name: "Nom produit",                price: 0  },
       ]
     },
 
@@ -144,8 +151,11 @@
         { id: "cm-fekkas-amande", name: "Fekkas Amande",  pricePerKg: 100, description: "Biscuits croquants aux amandes" },
         { id: "cm-ghraybe",       name: "Ghraybe",        pricePerKg: 110, description: "Shortbread fondant"             },
         { id: "cm-ghriba-noix",   name: "Ghriba Noix",   pricePerKg: 130, description: "Craquelé au sucre glace"        },
-        // ── À COMPLÉTER ──────────────────────────────────────
-        // { id: "cm-nom-unique", name: "Nom du produit", pricePerKg: 000, description: "description"                   },
+        { id: "cm-item-5",        name: "Nom produit",    pricePerKg: 100, description: "description"                   },
+        { id: "cm-item-6",        name: "Nom produit",    pricePerKg: 100, description: "description"                   },
+        { id: "cm-item-7",        name: "Nom produit",    pricePerKg: 100, description: "description"                   },
+        { id: "cm-item-8",        name: "Nom produit",    pricePerKg: 100, description: "description"                   },
+        { id: "cm-item-9",        name: "Nom produit",    pricePerKg: 100, description: "description"                   },
       ]
     },
 
@@ -153,10 +163,13 @@
       name: "Formules & Box",
       pricingType: PRICING_TYPES.FIXED,
       items: [
-        { id: "fb-box-petit-dej",  name: "Box Petit-Déjeuner (6 pcs)",   price: 70,  description: "Assortiment de 6 viennoiseries"              },
-        { id: "fb-plateau-event",  name: "Plateau Événement (15 pcs)",   price: 250, description: "15 pièces assorties, livraison incluse"      },
-        // ── À COMPLÉTER ──────────────────────────────────────
-        // { id: "fb-nom-unique",  name: "Nom de la formule",            price: 0,   description: "description de la formule"                  },
+        { id: "fb-box-petit-dej",  name: "Box Petit-Déjeuner (6 pcs)",   price: 70,  description: "Assortiment de 6 viennoiseries"         },
+        { id: "fb-plateau-event",  name: "Plateau Événement (15 pcs)",   price: 250, description: "15 pièces assorties, livraison incluse" },
+        { id: "fb-item-3",         name: "Nom formule",                  price: 0,   description: "description"                          },
+        { id: "fb-item-4",         name: "Nom formule",                  price: 0,   description: "description"                          },
+        { id: "fb-item-5",         name: "Nom formule",                  price: 0,   description: "description"                          },
+        { id: "fb-item-6",         name: "Nom formule",                  price: 0,   description: "description"                          },
+        { id: "fb-item-7",         name: "Nom formule",                  price: 0,   description: "description"                          },
       ]
     },
 
@@ -164,9 +177,16 @@
       name: "Cakes & Petites Tartes",
       pricingType: PRICING_TYPES.UNIT,
       items: [
-        // ── À COMPLÉTER ──────────────────────────────────────
-        // { id: "cake-nom-unique",  name: "Nom du cake",  price: 0  },
-        // { id: "cake-nom-unique2", name: "Nom du cake2", price: 0  },
+        { id: "cake-item-1",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-2",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-3",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-4",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-5",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-6",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-7",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-8",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-9",   name: "Nom produit",  price: 0  },
+        { id: "cake-item-10",  name: "Nom produit",  price: 0  },
       ]
     },
 
@@ -373,7 +393,7 @@
       // Stepper shows pending qty (starts at max of 1 or in-cart qty)
       html += '<div class="pc-stepper">';
       html += '<button type="button" class="stepper-dec" data-id="' + product.id + '" aria-label="Diminuer">−</button>';
-      html += '<span class="pc-qty" data-id="' + product.id + '">' + (inCartQty || 1) + '</span>';
+      html += '<span class="pc-qty" data-id="' + product.id + '">' + inCartQty + '</span>';
       html += '<button type="button" class="stepper-inc" data-id="' + product.id + '" aria-label="Augmenter">+</button>';
       html += '</div></div>';
       if (inCartQty > 0) {
@@ -391,14 +411,14 @@
   function attachUnitListeners(catKey) {
     var category = CATALOG[catKey];
 
-    // Stepper − button: decrement local pending qty (min 1, never touches cart)
+    // Stepper − button: decrement local pending qty (min 0, never touches cart)
     productListContainer.querySelectorAll('.stepper-dec').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var id = btn.dataset.id;
         var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
         if (!countEl) return;
-        var current = parseInt(countEl.textContent) || 1;
-        if (current > 1) countEl.textContent = current - 1;
+        var current = parseInt(countEl.textContent) || 0;
+        if (current > 0) countEl.textContent = current - 1;
       });
     });
 
@@ -408,13 +428,13 @@
         var id = btn.dataset.id;
         var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
         if (!countEl) return;
-        var current = parseInt(countEl.textContent) || 1;
+        var current = parseInt(countEl.textContent) || 0;
         countEl.textContent = current + 1;
       });
     });
 
     // "Ajouter" button: ONLY place that writes to cart
-    // Reads current pending qty from stepper display
+    // Reads current pending qty from stepper display (min 1 if still at 0)
     productListContainer.querySelectorAll('.product-card-ajouter').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var id = btn.dataset.id;
@@ -422,7 +442,7 @@
         if (!product) return;
 
         var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
-        var pendingQty = countEl ? (parseInt(countEl.textContent) || 1) : 1;
+        var pendingQty = Math.max(1, countEl ? (parseInt(countEl.textContent) || 0) : 1);
 
         var existing = cart.find(function(c) { return c.id === id; });
         if (existing) {
