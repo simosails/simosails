@@ -94,96 +94,89 @@
 
   const PRICING_TYPES = { UNIT: 'unit', WEIGHT: 'weight', PORTION: 'portion', FIXED: 'fixed' };
 
+  // ─── CATALOG ─────────────────────────────────────────
+  // HOW TO EDIT:
+  //   • UNIT / FIXED items:  { id: "unique-id", name: "Nom du produit", price: 00 }
+  //   • WEIGHT items:        { id: "unique-id", name: "Nom du produit", pricePerKg: 000, description: "courte description" }
+  //   • To add a product:    copy any existing real item line, paste below it, change id/name/price.
+  //   • id must be unique — use lowercase-hyphenated format, e.g. "vt-pain-raisin"
+  //   • Remove any item by deleting its line.
+
   const CATALOG = {
     'viennoiseries-trad': {
       name: "Viennoiseries Traditionnelles",
       pricingType: PRICING_TYPES.UNIT,
       items: [
-        { id: "vt-croissant", name: "Croissant", price: 6 },
-        { id: "vt-pain-choc", name: "Pain au chocolat", price: 7 },
-        { id: "vt-pain-suisse", name: "Pain Suisse", price: 7 },
-        { id: "vt-pain-brise", name: "Pain brisé", price: 6 },
-        { id: "vt-chausson-fromage", name: "Chausson Fromage", price: 7 },
-        { id: "vt-placeholder-1", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vt-placeholder-2", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vt-placeholder-3", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vt-placeholder-4", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vt-placeholder-5", name: "XX", price: 0, isPlaceholder: true }
+        { id: "vt-croissant",         name: "Croissant",              price: 6  },
+        { id: "vt-pain-choc",         name: "Pain au chocolat",       price: 7  },
+        { id: "vt-pain-suisse",       name: "Pain Suisse",            price: 7  },
+        { id: "vt-pain-brise",        name: "Pain brisé",             price: 6  },
+        { id: "vt-chausson-fromage",  name: "Chausson Fromage",       price: 7  },
+        // ── À COMPLÉTER ──────────────────────────────────────
+        // { id: "vt-nom-unique",     name: "Nom du produit",         price: 0  },
+        // { id: "vt-nom-unique-2",   name: "Nom du produit 2",       price: 0  },
       ]
     },
+
     'viennoiseries-modernes': {
       name: "Viennoiseries Modernes",
       pricingType: PRICING_TYPES.UNIT,
       items: [
-        { id: "vm-creme-amande", name: "Fourrée à la crème amande", price: 10 },
-        { id: "vm-crokies-pistache", name: "Les Crokies Pistaches", price: 15 },
-        { id: "vm-crokies-lotus", name: "Les Crokies Lotus", price: 15 },
-        { id: "vm-crokies-classique", name: "Les Crokies Classique", price: 15 },
-        { id: "vm-crokies-noisette", name: "Les Crokies Noisette", price: 15 },
-        { id: "vm-crokies-brownie", name: "Crokies Brownie", price: 15 },
-        { id: "vm-croquets-pistache", name: "Les Croquets Pistaches", price: 15 },
-        { id: "vm-croissant-dubai", name: "Croissant Dubai", price: 18 },
-        { id: "vm-placeholder-1", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vm-placeholder-2", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vm-placeholder-3", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vm-placeholder-4", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vm-placeholder-5", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vm-placeholder-6", name: "XX", price: 0, isPlaceholder: true },
-        { id: "vm-placeholder-7", name: "XX", price: 0, isPlaceholder: true }
+        { id: "vm-creme-amande",      name: "Fourrée à la crème amande",  price: 10 },
+        { id: "vm-crokies-pistache",  name: "Crokies Pistache",           price: 15 },
+        { id: "vm-crokies-lotus",     name: "Crokies Lotus",              price: 15 },
+        { id: "vm-crokies-classique", name: "Crokies Classique",          price: 15 },
+        { id: "vm-crokies-noisette",  name: "Crokies Noisette",           price: 15 },
+        { id: "vm-crokies-brownie",   name: "Crokies Brownie",            price: 15 },
+        { id: "vm-croquets-pistache", name: "Croquets Pistache",          price: 15 },
+        { id: "vm-croissant-dubai",   name: "Croissant Dubai",            price: 18 },
+        // ── À COMPLÉTER ──────────────────────────────────────
+        // { id: "vm-nom-unique",     name: "Nom du produit",             price: 0  },
       ]
     },
+
     'marocains': {
       name: "Classiques Marocains",
       pricingType: PRICING_TYPES.WEIGHT,
       defaultPricePerKg: 120,
       items: [
-        { id: "cm-kaab-ghzal", name: "Kaab Ghzal", pricePerKg: 120, description: "Cornes de gazelle aux amandes" },
-        { id: "cm-fekkas-amande", name: "Fekkas Amande", pricePerKg: 100, description: "Biscuits croquants aux amandes" },
-        { id: "cm-ghraybe", name: "Ghraybe", pricePerKg: 110, description: "Shortbread fondant" },
-        { id: "cm-ghriba-noix", name: "Ghriba Noix", pricePerKg: 130, description: "Craquelé au sucre glace" },
-        { id: "cm-placeholder-1", name: "XX", pricePerKg: 100, isPlaceholder: true },
-        { id: "cm-placeholder-2", name: "XX", pricePerKg: 100, isPlaceholder: true },
-        { id: "cm-placeholder-3", name: "XX", pricePerKg: 100, isPlaceholder: true },
-        { id: "cm-placeholder-4", name: "XX", pricePerKg: 100, isPlaceholder: true },
-        { id: "cm-placeholder-5", name: "XX", pricePerKg: 100, isPlaceholder: true }
+        { id: "cm-kaab-ghzal",    name: "Kaab Ghzal",    pricePerKg: 120, description: "Cornes de gazelle aux amandes"  },
+        { id: "cm-fekkas-amande", name: "Fekkas Amande",  pricePerKg: 100, description: "Biscuits croquants aux amandes" },
+        { id: "cm-ghraybe",       name: "Ghraybe",        pricePerKg: 110, description: "Shortbread fondant"             },
+        { id: "cm-ghriba-noix",   name: "Ghriba Noix",   pricePerKg: 130, description: "Craquelé au sucre glace"        },
+        // ── À COMPLÉTER ──────────────────────────────────────
+        // { id: "cm-nom-unique", name: "Nom du produit", pricePerKg: 000, description: "description"                   },
       ]
     },
+
     'formules': {
       name: "Formules & Box",
       pricingType: PRICING_TYPES.FIXED,
       items: [
-        { id: "fb-box-petit-dej", name: "Box Petit-Déjeuner (6 pcs)", price: 70, description: "Assortiment de 6 viennoiseries" },
-        { id: "fb-plateau-event", name: "Plateau Événement (15 pcs)", price: 250, description: "15 pièces assorties, livraison incluse" },
-        { id: "fb-placeholder-1", name: "XX", price: 0, isPlaceholder: true },
-        { id: "fb-placeholder-2", name: "XX", price: 0, isPlaceholder: true },
-        { id: "fb-placeholder-3", name: "XX", price: 0, isPlaceholder: true },
-        { id: "fb-placeholder-4", name: "XX", price: 0, isPlaceholder: true },
-        { id: "fb-placeholder-5", name: "XX", price: 0, isPlaceholder: true }
+        { id: "fb-box-petit-dej",  name: "Box Petit-Déjeuner (6 pcs)",   price: 70,  description: "Assortiment de 6 viennoiseries"              },
+        { id: "fb-plateau-event",  name: "Plateau Événement (15 pcs)",   price: 250, description: "15 pièces assorties, livraison incluse"      },
+        // ── À COMPLÉTER ──────────────────────────────────────
+        // { id: "fb-nom-unique",  name: "Nom de la formule",            price: 0,   description: "description de la formule"                  },
       ]
     },
+
     'cakes': {
       name: "Cakes & Petites Tartes",
       pricingType: PRICING_TYPES.UNIT,
       items: [
-        { id: "cake-placeholder-1", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-2", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-3", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-4", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-5", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-6", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-7", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-8", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-9", name: "XX", price: 0, isPlaceholder: true },
-        { id: "cake-placeholder-10", name: "XX", price: 0, isPlaceholder: true }
+        // ── À COMPLÉTER ──────────────────────────────────────
+        // { id: "cake-nom-unique",  name: "Nom du cake",  price: 0  },
+        // { id: "cake-nom-unique2", name: "Nom du cake2", price: 0  },
       ]
     },
+
     'special': {
       name: "Commandes Spéciales",
       pricingType: PRICING_TYPES.PORTION,
       subCategories: [
-        { key: 'mariage', emoji: '🎂', name: 'Mariage', desc: 'Wedding cake & service complet' },
-        { key: 'anniversaire', emoji: '🎉', name: 'Anniversaire', desc: 'Gâteau sur mesure pour votre fête' },
-        { key: 'evenement', emoji: '🌟', name: 'Événement', desc: 'Plateaux & créations pour vos invités' }
+        { key: 'mariage',      emoji: '🎂', name: 'Mariage',      desc: 'Wedding cake & service complet'          },
+        { key: 'anniversaire', emoji: '🎉', name: 'Anniversaire', desc: 'Gâteau sur mesure pour votre fête'       },
+        { key: 'evenement',    emoji: '🌟', name: 'Événement',    desc: 'Plateaux & créations pour vos invités'   }
       ],
       items: []
     }
@@ -196,16 +189,34 @@
     });
   });
 
-  // ─── CART STATE ──────────────────────────────────────
-  let cart = [];
+  // ─── CART STATE (localStorage persistence) ───────────
+  let _cartSeq = 0;
+  function generateCartId() { return 'ci_' + (++_cartSeq); }
 
-  function generateCartId() {
-    return 'cart_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  function loadCart() {
+    try {
+      var saved = localStorage.getItem('lartica_cart');
+      if (saved) {
+        var parsed = JSON.parse(saved);
+        // Validate items still exist in catalog
+        return parsed.filter(function(item) {
+          return item.categoryKey && CATALOG[item.categoryKey];
+        });
+      }
+    } catch(e) {}
+    return [];
   }
+
+  function saveCart() {
+    try { localStorage.setItem('lartica_cart', JSON.stringify(cart)); } catch(e) {}
+  }
+
+  let cart = loadCart();
 
   function addToCart(itemData) {
     const cartItem = Object.assign({ cartId: generateCartId() }, itemData);
     cart.push(cartItem);
+    saveCart();
     updateCartUI();
     triggerCartFlash();
     return cartItem;
@@ -213,16 +224,18 @@
 
   function removeFromCart(cartId) {
     cart = cart.filter(function(item) { return item.cartId !== cartId; });
+    saveCart();
     updateCartUI();
   }
 
   function updateCartItem(cartId, updates) {
     const item = cart.find(function(i) { return i.cartId === cartId; });
-    if (item) { Object.assign(item, updates); updateCartUI(); triggerCartFlash(); }
+    if (item) { Object.assign(item, updates); saveCart(); updateCartUI(); triggerCartFlash(); }
   }
 
   function clearCart() {
     cart = [];
+    saveCart();
     updateCartUI();
   }
 
@@ -328,16 +341,27 @@
   }
 
   // ─── UNIT PRODUCTS (card grid) ─────────────────────
+  // FIX: Stepper only adjusts a local "pending" quantity counter.
+  // "Ajouter" is the ONLY action that commits to the cart.
+  // This eliminates the double-add bug where stepper + ajouter both added.
+
   function renderUnitProducts(catKey) {
     var category = CATALOG[catKey];
+
+    // Filter out empty categories gracefully
+    var realItems = category.items;
+    if (realItems.length === 0) {
+      productListContainer.innerHTML = '<div class="empty-category-notice"><span>🎂</span><p>Cette catégorie sera bientôt disponible. Revenez nous voir !</p></div>';
+      return;
+    }
+
     var html = '<div class="product-grid">';
-    category.items.forEach(function(product) {
-      var existing = cart.find(function(c) { return c.id === product.id; });
-      var qty = existing ? existing.quantity : 0;
-      var isPlaceholder = product.isPlaceholder;
+    realItems.forEach(function(product) {
+      var inCartItem = cart.find(function(c) { return c.id === product.id; });
+      var inCartQty = inCartItem ? inCartItem.quantity : 0;
       var imgSrc = 'images/products/' + product.id + '.webp';
 
-      html += '<div class="product-card' + (isPlaceholder ? ' placeholder-card' : '') + '">';
+      html += '<div class="product-card" data-product-id="' + product.id + '">';
       html += '<div class="product-card-img">';
       html += '<img src="' + imgSrc + '" alt="' + (product.name || '') + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'" loading="lazy" />';
       html += '<span class="product-initial" style="display:none">' + (product.name ? product.name.charAt(0) : '?') + '</span>';
@@ -346,12 +370,17 @@
       html += '<span class="pc-name">' + (product.name || '—') + '</span>';
       if (product.price) html += '<span class="pc-price">' + product.price + ' DH</span>';
       if (product.description) html += '<span class="pc-desc">' + product.description + '</span>';
+      // Stepper shows pending qty (starts at max of 1 or in-cart qty)
       html += '<div class="pc-stepper">';
-      html += '<button type="button" class="stepper-dec" data-id="' + product.id + '"' + (isPlaceholder ? ' disabled' : '') + ' aria-label="Diminuer">−</button>';
-      html += '<span class="pc-qty" data-id="' + product.id + '">' + qty + '</span>';
-      html += '<button type="button" class="stepper-inc" data-id="' + product.id + '"' + (isPlaceholder ? ' disabled' : '') + ' aria-label="Augmenter">+</button>';
+      html += '<button type="button" class="stepper-dec" data-id="' + product.id + '" aria-label="Diminuer">−</button>';
+      html += '<span class="pc-qty" data-id="' + product.id + '">' + (inCartQty || 1) + '</span>';
+      html += '<button type="button" class="stepper-inc" data-id="' + product.id + '" aria-label="Augmenter">+</button>';
       html += '</div></div>';
-      html += '<button type="button" class="product-card-ajouter" data-id="' + product.id + '"' + (isPlaceholder ? ' disabled' : '') + '>Ajouter</button>';
+      if (inCartQty > 0) {
+        html += '<button type="button" class="product-card-ajouter added" data-id="' + product.id + '">✓ Dans le panier</button>';
+      } else {
+        html += '<button type="button" class="product-card-ajouter" data-id="' + product.id + '">Ajouter</button>';
+      }
       html += '</div>';
     });
     html += '</div>';
@@ -362,52 +391,50 @@
   function attachUnitListeners(catKey) {
     var category = CATALOG[catKey];
 
-    productListContainer.querySelectorAll('.stepper-inc').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var id = btn.dataset.id;
-        var product = ITEMS_DICT[id];
-        if (!product || product.isPlaceholder) return;
-        var existing = cart.find(function(c) { return c.id === id; });
-        if (existing) updateCartItem(existing.cartId, { quantity: existing.quantity + 1 });
-        else addToCart({ id: id, name: product.name, price: product.price || 0, quantity: 1, categoryKey: catKey, pricingType: category.pricingType });
-        var updated = cart.find(function(c) { return c.id === id; });
-        var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
-        if (countEl && updated) countEl.textContent = updated.quantity;
-      });
-    });
-
+    // Stepper − button: decrement local pending qty (min 1, never touches cart)
     productListContainer.querySelectorAll('.stepper-dec').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var id = btn.dataset.id;
-        var existing = cart.find(function(c) { return c.id === id; });
-        if (!existing) return;
-        if (existing.quantity <= 1) {
-          removeFromCart(existing.cartId);
-          var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
-          if (countEl) countEl.textContent = 0;
-        } else {
-          updateCartItem(existing.cartId, { quantity: existing.quantity - 1 });
-          var updated = cart.find(function(c) { return c.id === id; });
-          var countEl2 = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
-          if (countEl2 && updated) countEl2.textContent = updated.quantity;
-        }
+        var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
+        if (!countEl) return;
+        var current = parseInt(countEl.textContent) || 1;
+        if (current > 1) countEl.textContent = current - 1;
       });
     });
 
+    // Stepper + button: increment local pending qty (never touches cart)
+    productListContainer.querySelectorAll('.stepper-inc').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.dataset.id;
+        var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
+        if (!countEl) return;
+        var current = parseInt(countEl.textContent) || 1;
+        countEl.textContent = current + 1;
+      });
+    });
+
+    // "Ajouter" button: ONLY place that writes to cart
+    // Reads current pending qty from stepper display
     productListContainer.querySelectorAll('.product-card-ajouter').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var id = btn.dataset.id;
         var product = ITEMS_DICT[id];
-        if (!product || product.isPlaceholder) return;
-        var existing = cart.find(function(c) { return c.id === id; });
-        if (existing) updateCartItem(existing.cartId, { quantity: existing.quantity + 1 });
-        else addToCart({ id: id, name: product.name, price: product.price || 0, quantity: 1, categoryKey: catKey, pricingType: category.pricingType });
-        var updated = cart.find(function(c) { return c.id === id; });
+        if (!product) return;
+
         var countEl = productListContainer.querySelector('.pc-qty[data-id="' + id + '"]');
-        if (countEl && updated) countEl.textContent = updated.quantity;
+        var pendingQty = countEl ? (parseInt(countEl.textContent) || 1) : 1;
+
+        var existing = cart.find(function(c) { return c.id === id; });
+        if (existing) {
+          // Update to the new chosen quantity (replace, don't add on top)
+          updateCartItem(existing.cartId, { quantity: pendingQty });
+        } else {
+          addToCart({ id: id, name: product.name, price: product.price || 0, quantity: pendingQty, categoryKey: catKey, pricingType: category.pricingType });
+        }
+
         btn.classList.add('added');
-        btn.textContent = '✓ Ajouté';
-        setTimeout(function() { btn.classList.remove('added'); btn.textContent = 'Ajouter'; }, 800);
+        btn.textContent = '✓ Dans le panier';
+        // No reset — stays "dans le panier" until user leaves the view
       });
     });
   }
@@ -415,15 +442,21 @@
   // ─── WEIGHT PRODUCTS (pill selector) ───────────────
   function renderWeightProducts(catKey) {
     var category = CATALOG[catKey];
+    var realItems = category.items;
+
+    if (realItems.length === 0) {
+      productListContainer.innerHTML = '<div class="empty-category-notice"><span>🍯</span><p>Cette catégorie sera bientôt disponible. Revenez nous voir !</p></div>';
+      return;
+    }
+
     var html = '';
-    category.items.forEach(function(product) {
+    realItems.forEach(function(product) {
       var existing = cart.find(function(c) { return c.id === product.id; });
       var selWeight = existing ? existing.weight : null;
       var pricePerKg = product.pricePerKg || category.defaultPricePerKg;
-      var isPlaceholder = product.isPlaceholder;
       var imgSrc = 'images/products/' + product.id + '.webp';
 
-      html += '<div class="weight-product-card' + (isPlaceholder ? ' placeholder-card' : '') + '">';
+      html += '<div class="weight-product-card">';
       html += '<div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:0.8rem">';
       html += '<div style="width:80px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--cream)">';
       html += '<img src="' + imgSrc + '" alt="' + (product.name || '') + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'" loading="lazy" />';
@@ -434,30 +467,28 @@
       html += '<span class="price-per-kg">' + pricePerKg + ' DH / kg</span>';
       html += '</div></div>';
 
-      if (!isPlaceholder) {
-        html += '<div class="weight-pill-row" data-id="' + product.id + '">';
-        WEIGHT_LABELS.forEach(function(label, i) {
-          var isActive = false;
-          if (i < WEIGHT_STOPS_G.length && selWeight === WEIGHT_STOPS_G[i]) isActive = true;
-          if (i === WEIGHT_STOPS_G.length && selWeight && !WEIGHT_STOPS_G.includes(selWeight)) isActive = true;
-          var grams = i < WEIGHT_STOPS_G.length ? WEIGHT_STOPS_G[i] : 'custom';
-          html += '<button type="button" class="weight-pill' + (isActive ? ' active' : '') + '" data-grams="' + grams + '" data-product="' + product.id + '">' + label + '</button>';
-        });
-        html += '</div>';
+      html += '<div class="weight-pill-row" data-id="' + product.id + '">';
+      WEIGHT_LABELS.forEach(function(label, i) {
+        var isActive = false;
+        if (i < WEIGHT_STOPS_G.length && selWeight === WEIGHT_STOPS_G[i]) isActive = true;
+        if (i === WEIGHT_STOPS_G.length && selWeight && !WEIGHT_STOPS_G.includes(selWeight)) isActive = true;
+        var grams = i < WEIGHT_STOPS_G.length ? WEIGHT_STOPS_G[i] : 'custom';
+        html += '<button type="button" class="weight-pill' + (isActive ? ' active' : '') + '" data-grams="' + grams + '" data-product="' + product.id + '">' + label + '</button>';
+      });
+      html += '</div>';
 
-        var isCustomOpen = selWeight && !WEIGHT_STOPS_G.includes(selWeight);
-        html += '<div class="ws-custom-wrap' + (isCustomOpen ? ' open' : '') + '" id="wsc-' + product.id + '">';
-        html += '<input type="number" placeholder="Poids en grammes" min="100" step="50" value="' + (isCustomOpen ? selWeight : '') + '" data-id="' + product.id + '" />';
-        html += '<span>g</span></div>';
+      var isCustomOpen = selWeight && !WEIGHT_STOPS_G.includes(selWeight);
+      html += '<div class="ws-custom-wrap' + (isCustomOpen ? ' open' : '') + '" id="wsc-' + product.id + '">';
+      html += '<input type="number" placeholder="Poids en grammes" min="100" max="10000" step="50" value="' + (isCustomOpen ? selWeight : '') + '" data-id="' + product.id + '" />';
+      html += '<span>g</span></div>';
 
-        html += '<div id="wsp-' + product.id + '">';
-        if (selWeight) {
-          html += '<div class="weight-price-preview"><span>' + formatWeight(selWeight) + '</span><span>→</span><span class="wpp-price">' + Math.round(selWeight / 1000 * pricePerKg) + ' DH</span></div>';
-        }
-        html += '</div>';
-
-        html += '<button type="button" class="weight-card-ajouter" data-id="' + product.id + '">' + (existing ? '✓ Dans le panier' : 'Ajouter') + '</button>';
+      html += '<div id="wsp-' + product.id + '">';
+      if (selWeight) {
+        html += '<div class="weight-price-preview"><span>' + formatWeight(selWeight) + '</span><span>→</span><span class="wpp-price">' + Math.round(selWeight / 1000 * pricePerKg) + ' DH</span></div>';
       }
+      html += '</div>';
+
+      html += '<button type="button" class="weight-card-ajouter" data-id="' + product.id + '">' + (existing ? '✓ Dans le panier' : 'Ajouter') + '</button>';
       html += '</div>';
     });
     productListContainer.innerHTML = html;
@@ -501,6 +532,7 @@
         var g = parseInt(input.value);
         var preview = document.getElementById('wsp-' + id);
         if (!g || g < 100) { preview.innerHTML = ''; return; }
+        if (g > 10000) { g = 10000; input.value = 10000; }
         preview.innerHTML = '<div class="weight-price-preview"><span>' + formatWeight(g) + '</span><span>→</span><span class="wpp-price">' + Math.round(g / 1000 * pricePerKg) + ' DH</span></div>';
         syncWeightCart(id, g, pricePerKg, catKey);
       });
@@ -518,7 +550,7 @@
           return;
         }
         btn.classList.add('added');
-        btn.textContent = '✓ Ajouté';
+        btn.textContent = '✓ Dans le panier';
         setTimeout(function() { btn.classList.remove('added'); btn.textContent = '✓ Dans le panier'; }, 800);
       });
     });
@@ -531,7 +563,7 @@
   }
 
   // ─── SPECIAL ORDERS (sub-category architecture) ────
-  var specialSubView = null; // track sub-view state
+  var specialSubView = null;
 
   function renderSpecialProducts(catKey) {
     var category = CATALOG[catKey];
@@ -549,8 +581,7 @@
 
     productListContainer.querySelectorAll('.sub-category-tile').forEach(function(tile) {
       tile.addEventListener('click', function() {
-        var subKey = tile.dataset.sub;
-        renderSpecialOrderCard(catKey, subKey);
+        renderSpecialOrderCard(catKey, tile.dataset.sub);
       });
     });
   }
@@ -565,7 +596,7 @@
     html += '<h4>' + sub.emoji + ' ' + sub.name + '</h4>';
     html += '<p class="soc-desc">' + sub.desc + '</p>';
     html += '<label for="soc-persons">Nombre de personnes</label>';
-    html += '<input type="number" id="soc-persons" placeholder="Ex : 50" min="2" inputmode="numeric" /> ';
+    html += '<input type="number" id="soc-persons" placeholder="Ex : 50" min="2" inputmode="numeric" />';
     html += '<label for="soc-notes">Notes / précisions</label>';
     html += '<textarea id="soc-notes" placeholder="Détails, préférences, allergies..."></textarea>';
     html += '<button type="button" class="soc-wa-btn" id="soc-send">Envoyer sur WhatsApp</button>';
@@ -585,8 +616,14 @@
       if (persons) msg += '👥 ' + persons + ' personnes\n';
       if (notes) msg += '📝 ' + notes + '\n';
       msg += '\nMerci de me contacter pour discuter les détails.';
-      var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
-      window.open(url, '_blank', 'noopener');
+      // Synchronous redirect — avoids iOS popup blocker
+      var a = document.createElement('a');
+      a.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     });
   }
 
@@ -602,7 +639,6 @@
     cartTotal.textContent = totalText;
     btnNextStep.disabled = totals.itemCount === 0;
 
-    // Header badge
     if (headerCartBadge) {
       if (totals.itemCount > 0) {
         headerCartBadge.textContent = totals.itemCount;
@@ -783,15 +819,18 @@
     if (totals.devisItems.length > 0) msg += '⚠️ *Articles sur devis:* ' + totals.devisItems.length + '\n';
     msg += '\nMerci de confirmer la disponibilité ! 🙏';
 
-    var waUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
-    window.open(waUrl, '_blank', 'noopener');
+    // Synchronous anchor click — avoids iOS Safari popup blocker (setTimeout breaks it)
+    var a = document.createElement('a');
+    a.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-    // Success: close modal after 400ms, clear cart, show toast
-    setTimeout(function() {
-      closeModal();
-      clearCart();
-      showToast('✓ Commande envoyée sur WhatsApp');
-    }, 400);
+    closeModal();
+    clearCart();
+    showToast('✓ Commande envoyée sur WhatsApp');
   }
 
   function showToast(message) {
@@ -808,9 +847,10 @@
     if (!modal) return;
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    // Hide sticky CTA while modal is open
+    if (stickyCta) stickyCta.style.display = 'none';
     switchView('view-categories');
 
-    // If cart has items and opened from header cart btn with items, go to checkout
     if (productHint === '__cart_checkout__' && cart.length > 0) {
       switchView('view-checkout');
       return;
@@ -838,6 +878,8 @@
     if (!modal) return;
     modal.classList.remove('open');
     document.body.style.overflow = '';
+    // Restore sticky CTA visibility (IntersectionObserver will re-hide it if hero is visible)
+    if (stickyCta) stickyCta.style.display = '';
   }
 
   if (modalClose) modalClose.addEventListener('click', closeModal);
@@ -846,7 +888,6 @@
     if (e.key === 'Escape' && modal && modal.classList.contains('open')) closeModal();
   });
 
-  // Header cart btn special behavior
   var headerCartBtn = document.getElementById('header-cart-btn');
   if (headerCartBtn) {
     headerCartBtn.addEventListener('click', function(e) {
@@ -857,7 +898,6 @@
     });
   }
 
-  // All other order buttons
   document.querySelectorAll('[data-open-order]').forEach(function(btn) {
     if (btn.id === 'header-cart-btn') return;
     btn.addEventListener('click', function(e) {
@@ -866,7 +906,7 @@
     });
   });
 
-  // Set min date
+  // Set min date to today
   var dateInput = document.getElementById('order-date');
   if (dateInput) {
     var today = new Date();
@@ -876,7 +916,9 @@
   var orderForm = document.getElementById('order-form');
   if (orderForm) orderForm.addEventListener('submit', function(e) { e.preventDefault(); handleCheckoutSubmit(); });
 
-  // ─── ANTIGRAVITY HERO PARALLAX (gated by IntersectionObserver) ──
+  // ─── ANTIGRAVITY HERO PARALLAX ───────────────────────
+  // ONLY runs on true pointer devices (desktop/laptop with mouse).
+  // Skipped entirely on touchscreen phones — saves battery, avoids jank.
   function initAntigravity() {
     var heroDom = document.querySelector('.hero-images');
     if (!heroDom) return;
@@ -939,11 +981,16 @@
     }, { threshold: 0 });
 
     heroObserver.observe(heroDom);
-
     window.addEventListener('scroll', function() { lastScrollY = window.scrollY; }, { passive: true });
   }
 
-  setTimeout(initAntigravity, 1000);
+  // Gate: only pointer devices (mouse/trackpad). Touchscreens get nothing — saves GPU + battery.
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    setTimeout(initAntigravity, 1000);
+  }
+
+  // Initialize cart UI on load
+  updateCartUI();
 
   // Expose for debugging
   window.openOrderModal = openModal;
@@ -951,4 +998,3 @@
   window.clearCart = clearCart;
 
 })();
-
