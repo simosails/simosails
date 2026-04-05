@@ -2779,27 +2779,30 @@ footer .footer-inner {
   .hero-images {
     order: 2;
     height: 380px;
+    width: calc(100% - 2rem);
+    max-width: 420px;
+    margin: 0 auto;
   }
 
   .hero-main {
-    width: 60%;
-    left: 1%;
+    width: 55%;
+    left: 0;
     bottom: 2%;
-    height: 84%;
+    height: 80%;
   }
 
   .hero-tall {
     width: 40%;
-    left: 30%;
+    left: 27%;
     top: 0;
-    height: 98%;
+    height: 95%;
   }
 
   .hero-side {
-    width: 30%;
-    right: 1%;
-    top: 15%;
-    height: 50%;
+    width: 27%;
+    right: 0;
+    top: 20%;
+    height: 46%;
   }
 
   h1 {
@@ -3000,27 +3003,26 @@ footer .footer-inner {
 
 @media (max-width: 375px) {
   .hero-images {
-    height: 270px;
+    height: 250px;
   }
 
   .hero-main {
     width: 54%;
-    left: 0%;
+    left: 0;
     bottom: 2%;
-    height: 78;
+    height: 78%;
   }
 
   .hero-tall {
     width: 39%;
-    left: 27%;
-    top: 0%;
-    height: 94%;
-    ;
+    left: 26%;
+    top: 0;
+    height: 93%;
   }
 
   .hero-side {
-    width: 29%;
-    right: -2%;
+    width: 26%;
+    right: 0;
     top: 22%;
     height: 44%;
   }
